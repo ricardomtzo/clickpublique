@@ -1,20 +1,32 @@
-import React, { useState } from 'react';
-import { 
-  List, ListItem, Checkbox, FormControlLabel, Slider, TextField, Button, 
-  Typography
+import React, { useEffect, useState } from 'react';
+import {
+  List, ListItem, Checkbox, FormControlLabel, Slider, TextField, Button,
+  Typography,
+  Box
 } from '@mui/material';
 import { CheckboxChangeEvent } from 'primereact/checkbox';
+import CategorieService from '@/services/CategorieService';
 
 const FiltroLateral = () => {
-  const [categoria, setCategoria] = useState({
-    carros: false,
-    imóveis: false,
-    eletrônicos: false,
-  });
+  const [categoria, setCategoria] = useState<any>({});
   const [preco, setPreco] = useState([0, 1000]);
   const [localizacao, setLocalizacao] = useState('');
+  const [categories, setCategories] = useState<any>([]);
 
-  const handleCategoriaChange = (event: any) => {
+  useEffect(() => {
+    getCategories();
+  }, []);
+
+  const getCategories = async () => {
+    try {
+      const response = await CategorieService.getAll();
+      setCategories(response);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const handleCategoryChange = (event: any) => {
     setCategoria({
       ...categoria,
       [event.target.name]: event.target.checked,
@@ -36,81 +48,61 @@ const FiltroLateral = () => {
   };
 
   return (
-      <List style={{ width: 250, padding: 20, color: 'black' }}>
-        <Typography variant="body1">Filtros</Typography>
+    <List style={{ width: 290, padding: 20, color: 'black' }}>
+      <Typography variant="h6">Filtros</Typography>
+      <Box className="h-[2px] bg-gray-300 my-1 mb-4" />
 
-        {/* Filtro por Categoria */}
-        <Typography variant="body1">Categorias</Typography>
+      {/* Filtro por Categoria */}
+      <Typography variant="body2">Categorias</Typography>
 
-        <ListItem className='mt-2 h-[30px]'>
+
+      {categories.map((category: any) => (
+        <ListItem key={category.id} className='mt-2 h-[30px]'>
           <FormControlLabel
             control={
               <Checkbox
-                checked={categoria.carros}
-                onChange={handleCategoriaChange}
-                name="carros"
+                checked={categoria[category.slug]}
+                onChange={handleCategoryChange}
+                name={category.name}
               />
             }
-            label="Carros"
+            label={category.name}
           />
         </ListItem>
-        <ListItem className='pt-0 h-[30px]'>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={categoria.imóveis}
-                onChange={handleCategoriaChange}
-                name="imóveis"
-              />
-            }
-            label="Imóveis"
-          />
-        </ListItem>
-        <ListItem className='pt-0 h-[30px]'>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={categoria.eletrônicos}
-                onChange={handleCategoriaChange}
-                name="eletrônicos"
-              />
-            }
-            label="Eletrônicos"
-          />
-        </ListItem>
+      ))}
 
-        {/* Filtro por Preço */}
-        <Typography variant="body1">Preço</Typography>
-        <ListItem>
-          <Slider
-            value={preco}
-            onChange={handlePrecoChange}
-            valueLabelDisplay="auto"
-            min={0}
-            max={10000}
-          />
-        </ListItem>
+      {/* Filtro por Preço */}
+      <Typography className='mt-3' variant="body2">Preço</Typography>
+      <ListItem>
+        <Slider
+          value={preco}
+          onChange={handlePrecoChange}
+          valueLabelDisplay="auto"
+          min={0}
+          max={10000}
+        />
+      </ListItem>
 
-        {/* Filtro por Localização */}
-        <Typography variant="body1">Localização</Typography>
-          <TextField
-            label="Cidade ou Região"
-            variant="outlined"
-            className='mt-2'
-            size='small'
-            value={localizacao}
-            onChange={(e) => setLocalizacao(e.target.value)}
-            fullWidth
-          />
+      {/* Filtro por Localização */}
+      <Typography className='mt-3' variant="body2">Localização</Typography>
+      <TextField
+        label="Cidade ou Região"
+        variant="outlined"
+        className='mt-2'
+        size='small'
+        value={localizacao}
+        onChange={(e) => setLocalizacao(e.target.value)}
+        fullWidth
+      />
 
-        {/* Botões de Ação */}
-          <Button variant="contained" className='mt-2' color="primary" fullWidth>
-            Aplicar Filtros
-          </Button>
-          <Button variant="outlined" className='mt-2' color="secondary" fullWidth onClick={handleLimparFiltros}>
-            Limpar Filtros
-          </Button>
-      </List>
+      {/* Botões de Ação */}
+      <Button variant="contained" className='mt-2' color="primary" fullWidth>
+        Aplicar Filtros
+      </Button>
+      <Button variant="outlined" className='mt-2' color="secondary" fullWidth onClick={handleLimparFiltros}>
+        Limpar Filtros
+      </Button>
+    </List>
   );
 };
 

@@ -22,6 +22,7 @@ import { useAuth } from "../hooks/AuthService";
 export default function Cadastro() {
 
   const { login, register } = useAuth();
+  const [typeUser, setTypeUser] = React.useState('PF');
 
   function handleSubmit (e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -31,17 +32,16 @@ export default function Cadastro() {
       name: e.currentTarget['nome'].value,
       email: e.currentTarget['email'].value,
       password: e.currentTarget['password'].value,
-      type_user: e.currentTarget['type_user'].value,
+      type_user: typeUser,
       active: true
-
     }
 
     register(form, '123');
-
-
-    
   }
 
+  const handlerTypeUser = (e: any) => {
+    setTypeUser(e.target.value);
+  }
   return (
     <Col container spacing={2} justifyContent={'center'} alignItems={'center'} style={{ margin: '20px' }}>
       <Paper elevation={2} variant="outlined" className="rounded-xl p-5 max-w-[550px]" >
@@ -63,11 +63,11 @@ export default function Cadastro() {
 
             <Row container spacing={2}>
               <Typography variant="body1" color="black" className="mb-5" >
-                Pessoa física <Radio name="type_user" value="PF" />
+                Pessoa física <Radio name="type_user" value="PF" checked={typeUser === 'PF'} onChange={handlerTypeUser} />
               </Typography>
 
               <Typography variant="body1" color="black" className="mb-5" >
-                Pessoa jurídica <Radio name="type_user" value="PJ" />
+                Pessoa jurídica <Radio name="type_user" value="PJ" checked={typeUser === 'PJ'} onChange={handlerTypeUser} />
               </Typography>
             </Row>
 

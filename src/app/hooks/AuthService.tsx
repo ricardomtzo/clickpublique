@@ -4,12 +4,17 @@ import { createContext, useContext, useReducer, useEffect, ReactNode } from "rea
 // Definição dos tipos
 interface User {
     id?: string;
-    name: string;
+    name: string | undefined;
     email: string;
+    phone: string;
     cpf: string;
     password: string;
     type_user: string;
-    active: boolean;
+    gender: string;
+    address?: any;
+    active: boolean;  
+    created_at?: string;
+    date_birth?: string;
 }
 
 interface AuthState {
@@ -19,8 +24,9 @@ interface AuthState {
 }
 
 interface AuthContextType extends AuthState {
+  updateUser: (user: any) => void;
   login: (email: string, password: string) => void;
-  register: (user: User, token: string) => void;
+  register: (user: Partial<User>, token: string) => void;
   logout: () => void;
 }
 
@@ -37,12 +43,21 @@ const initialState: AuthState = {
 
 // Redutor para gerenciar o estado de autenticação
 type AuthAction =
+  | { type: "UPDATE"; payload: { user: User } }
   | { type: "LOGIN"; payload: { user: User; token: string } }
   | { type: "REGISTER"; payload: { user: User; token: string } }
   | { type: "LOGOUT" };
 
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   switch (action.type) {
+    case "UPDATE":
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          ...action.payload.user,
+        },
+      };
     case "LOGIN":
       return {
         user: action.payload.user,
@@ -76,7 +91,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   // Função de login
-  const register = (user: User, token: string) => {
+  const register = (user: Partial<User>, token: string) => {
 
     fetch('http://localhost:8000/api/register', {
         method: 'POST',
@@ -131,6 +146,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   };
 
+  const updateUser = (user: User) => {
+    const updatedUser = { ...state.user, ...user };
+    
+    localStorage.setItem("user", JSON.stringify(user));
+    dispatch({ type: "UPDATE", payload: { user: updatedUser } });
+  };
+
   // Função de logout
   const logout = () => {
     localStorage.removeItem("user");
@@ -139,7 +161,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   return (
-    <AuthContext.Provider value={{ ...state, login, logout, register }}>
+    <AuthContext.Provider value={{ ...state, login, logout, register, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

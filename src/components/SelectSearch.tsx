@@ -2,31 +2,17 @@
 import React, { useState } from "react";
 import { Dropdown, DropdownChangeEvent, DropdownProps } from 'primereact/dropdown';
 
-interface Country {
-    name: string;
-    code: string;
-}
 
 export default function SelectSearch(props: DropdownProps) {
-    const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
-    const countries: Country[] = [
-        { name: 'Australia', code: 'AU' },
-        { name: 'Brazil', code: 'BR' },
-        { name: 'China', code: 'CN' },
-        { name: 'Egypt', code: 'EG' },
-        { name: 'France', code: 'FR' },
-        { name: 'Germany', code: 'DE' },
-        { name: 'India', code: 'IN' },
-        { name: 'Japan', code: 'JP' },
-        { name: 'Spain', code: 'ES' },
-        { name: 'United States', code: 'US' }
+    const [selectedCountry, setSelectedCountry] = useState<any | null>(null);
+    const countries: any[] = [
+        { name: '', id: '0' }
     ];
 
-    const selectedCountryTemplate = (option: Country, props: any) => {
+    const selectedCountryTemplate = (option: any, props: any) => {
         if (option) {
             return (
                 <div className="flex align-items-center">
-                    <img alt={option.name} src="https://primefaces.org/cdn/primereact/images/flag/flag_placeholder.png" className={`mr-2 flag flag-${option.code.toLowerCase()}`} style={{ width: '18px' }} />
                     <div>{option.name}</div>
                 </div>
             );
@@ -35,10 +21,9 @@ export default function SelectSearch(props: DropdownProps) {
         return <span>{props.placeholder}</span>;
     };
 
-    const countryOptionTemplate = (option: Country) => {
+    const countryOptionTemplate = (option: any) => {
         return (
             <div className="flex align-items-center">
-                <img alt={option.name} src="https://primefaces.org/cdn/primereact/images/flag/flag_placeholder.png" className={`mr-2 flag flag-${option.code.toLowerCase()}`} style={{ width: '18px' }} />
                 <div>{option.name}</div>
             </div>
         );
@@ -48,7 +33,7 @@ export default function SelectSearch(props: DropdownProps) {
         <Dropdown
             filter
             value={selectedCountry}
-            options={countries}
+            options={props.options || countries}
             optionLabel="name"
             className="w-full md:w-14rem border my-[10px]"
             valueTemplate={selectedCountryTemplate}

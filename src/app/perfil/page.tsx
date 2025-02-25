@@ -1,5 +1,5 @@
 'use client'
-import React, { } from "react";
+import React, { useEffect, useState } from "react";
 import { alpha, Avatar, InputAdornment, InputBase, Paper, styled, Typography } from "@mui/material";
 import { Col, Row } from "@/components/Grids";
 import { CalendarTodayOutlined, CheckOutlined, Filter, LocationOnOutlined, ShareOutlined, Shop2Sharp } from "@mui/icons-material";
@@ -11,11 +11,41 @@ import TextInputCustom from "@/components/TextInputCustom";
 import SelectSearch from "@/components/SelectSearch";
 import ProductsList from "@/components/Products";
 import { useAuth } from "../hooks/AuthService";
+import AdsService from "@/services/AdsService";
+import CategorieService from "@/services/CategorieService";
 
 
 export default function Home() {
 
   const { user } = useAuth();
+
+  const [ads, setAds] = useState<any>([]);
+  const [categories, setCategories] = useState<any>([]);
+
+  useEffect(() => {
+    getAds();
+    getCategories();
+  },[]);
+
+  const getAds = async () => {
+    try {
+      const response = await AdsService.getAll();
+      console.log(response);
+      setAds(response);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const getCategories = async () => {
+    try {
+      const response = await CategorieService.getAll();
+      setCategories(response);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
 
   return (
     <Row container spacing={2} className="p-5" >
@@ -39,7 +69,7 @@ export default function Home() {
               icon={<CalendarTodayOutlined className="text-[18px] mr-2" />}
             />
             <TextIcon
-              text="Dom Avelar, Salvador - BA"
+              text={`${user?.address.street}, ${user?.address.number} - ${user?.address.district}, ${user?.address.city} - ${user?.address.state}`}
               icon={<LocationOnOutlined className="text-[18px] mr-2" />}
             />
 
@@ -80,12 +110,12 @@ export default function Home() {
         <Paper variant="outlined" className="rounded-xl p-5 mb-5" >
 
           <Filter className="text-[25px] mb-2" />
-          <Typography variant="body1" className="text-black" >4 anúncios</Typography>
+          <Typography variant="body1" className="text-black" >{ads.length} anúncios</Typography>
           <Typography variant="body1" className="text-black text-sm" >Publicados nos últimos 180 dias</Typography>
         </Paper>
 
         <Typography variant="body1" className="text-black mb-1" >Anúncios do vendedor</Typography>
-        <Typography variant="body1" className="text-black mb-2 text-sm" >1 de 1 anúncios publicados</Typography>
+        <Typography variant="body1" className="text-black mb-2 text-sm" >{ads.length} anúncios publicados</Typography>
 
         <TextInputCustom
           placeholder="Filtrar por..."
@@ -97,13 +127,13 @@ export default function Home() {
         />
 
         <Row container spacing={2} >
-          <Col><SelectSearch placeholder="Selecione uma categoria" /></Col>
+          <Col><SelectSearch placeholder="Selecione uma categoria" options={categories} /></Col>
           <Col><SelectSearch placeholder="Localização" /></Col>
           <Col><SelectSearch placeholder="Ordenar por" /></Col>
         </Row>
 
           <Paper variant="outlined" className="rounded-xl p-5 mt-5" >
-            <ProductsList />
+            <ProductsList ads={ads} />
           </Paper>
       </Col>
 

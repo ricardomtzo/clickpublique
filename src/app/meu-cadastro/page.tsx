@@ -1,118 +1,310 @@
 'use client'
-import React, {  } from "react";
-import { Paper, Typography } from "@mui/material";
-import { Col, Row } from "@/components/Grids";
-import { AssignmentIndOutlined, AdminPanelSettingsOutlined, CreditCardOutlined, NotificationsActiveOutlined, SchoolOutlined } from "@mui/icons-material";
-import TextIcon from "@/components/TextIcon";
-import { ButtonCustom } from "@/components/ButtonCustom";
-import TextInputCustom from "@/components/TextInputCustom";
+import * as React from 'react';
+import {
+  TextField,
+  Typography,
+  Box,
+  Paper,
+  Link,
+  Radio,
+  Grid2,
+} from '@mui/material';
+import { Col, Row } from '@/components/Grids';
 
+import { ButtonCustom } from '@/components/ButtonCustom';
+import { useAuth } from "../hooks/AuthService";
+import UserService from '@/services/UserService';
 
-export default function MeuCadastro() {
+export default function Cadastro() {
 
-  const ButtonMenu = ({ content }: any) => {
+  const { user ,login, register, updateUser  } = useAuth();
+  const [typeUser, setTypeUser] = React.useState<any>('1');
+  const [gender, setGender] = React.useState<any>('1');
 
-    return (
-      <Col sx={{
-        backgroundColor: '#fff',
-        padding: '10px 5px 1px 15px',
-        borderRadius: '50px',
-        margin: '10px 0px',
-        ":hover": {
-          cursor: 'pointer',
-          backgroundColor: '#2825812e'
-        }
-      }}>
-        {content}
-      </Col>
-    )
+  React.useEffect(() => {
+    user?.id && getUser(user?.id);
+    setTypeUser(user?.type_user);
+    setGender(user?.gender);
+  }, [user?.id]);
+
+  async function getUser (id: any) {
+    const response = await UserService.getById(id);
+    console.log(response);
   }
 
+  async function handleSubmitData (e: any) {
+    e.preventDefault()
+
+    const notAllowed = ['email', 'cpf'];
+    const form: any = {};
+
+    for (let index = 0; index < e.target.length; index++) {
+      if (
+        e.target[index].name 
+        && !notAllowed.includes(e.target[index].name)
+        && e.target[index].value != ""
+      )
+        form[e.target[index].name] = e.target[index].value;
+    }
+    
+    form['type_user'] = typeUser;
+    form['gender'] = gender;
+
+    console.log('form',form);
+    const response: any = await UserService.update(user?.id as string, form);
+    updateUser(response);
+    
+  }
+
+  const handleSubmitAddress = async(e: any) => {
+    e.preventDefault()
+
+    const form: any = {};
+    for (let index = 0; index < e.target.length; index++) {
+      if (e.target[index].name)
+        form[e.target[index].name] = e.target[index].value;
+    }
+
+    form['user_id'] = user?.id;
+ 
+    if(!user?.address?.id){
+      const response = await UserService.createAddress(form);
+      updateUser({
+        ...user,
+        address: response
+      })
+    }else{
+      const response = await UserService.updateAddress(user.address.id, form);
+      updateUser({
+        ...user,
+        address: response
+      })
+    }
+  }
+
+  const handleSubmitPhone = async(e: any) => {
+    e.preventDefault()
+
+    const form: any = {};
+    for (let index = 0; index < e.target.length; index++) {
+      if (e.target[index].name)
+        form[e.target[index].name] = e.target[index].value;
+    }
+ 
+    const response = await UserService.update(user?.address?.id as string, form);
+    console.log(response);
+    
+  }
+
+  const handlerTypeUser = (e: any) => {
+    setTypeUser(e.target.value);
+  }
+
+  const handlerGender = (e: any) => {
+    setGender(e.target.value);
+  }
 
   return (
-    <Row container spacing={2} className="p-5 justify-center h-[1300px] max-w-[1200px] m-auto"  >
-      <Col size={{ xs: 12, sm: 12, md: 4, lg: 4 }} >
-        <Paper variant="outlined" className="rounded-xl p-8" >
-          <ButtonMenu content={
-            <TextIcon
-              text="Meu cadastro"
-              textSize="18px"
-              icon={<AssignmentIndOutlined className="text-[24px] mr-2" />}
-            />
-          } />
+    <Col container spacing={2} style={{ maxWidth: '600px', margin: 'auto' }}>
 
-          <ButtonMenu content={
-            <TextIcon
-              text="Segurança e privacidade"
-              textSize="18px"
-              icon={<AdminPanelSettingsOutlined className="text-[24px] mr-2" />}
-            />
-          } />
+      <Typography variant="h5" className="text-black mt-5" >
+        Meu cadastro
+      </Typography>
 
-          <ButtonMenu content={
-            <TextIcon
-              text="Pagamentos"
-              textSize="18px"
-              icon={<CreditCardOutlined className="text-[24px] mr-2" />}
-            />
-          } />
+      <Paper elevation={2} variant="outlined" className="rounded-xl p-5 max-w-[550px]" >
+        <Col mb={5}>
+          <Box pt={3}>
 
-          <ButtonMenu content={
-            <TextIcon
-              text="Comunicações"
-              textSize="18px"
-              icon={<NotificationsActiveOutlined className="text-[24px] mr-2" />}
-            />
-          } />
+            <form onSubmit={handleSubmitData}>
 
-          <ButtonMenu content={
-            <TextIcon
-              text="Meu nível"
-              textSize="18px"
-              icon={<SchoolOutlined className="text-[24px] mr-2" />}
-            />
-          } />
+              <Typography variant="h6" className="text-black" >
+                Dados da conta
+              </Typography>
 
-        </Paper>
-      </Col>
+              <Row container spacing={2}>
+                <Typography variant="body1" color="black" className="" >
+                  Pessoa física <Radio name="type_user" value="PF" checked={typeUser === 'PF'} onChange={handlerTypeUser} />
+                </Typography>
 
-      <Col className="px-3" size={{ xs: 12, sm: 12, md: 8, lg: 8 }}>
-        <Typography variant="body1" className="text-black " >Meu cadastro</Typography>
-        <Typography variant="subtitle1" className="text-[grey] text-sm" >Configure seu cadastro e aumente a confiança do seu perfil</Typography>
+                <Typography variant="body1" color="black" className="" >
+                  Pessoa jurídica <Radio name="type_user" value="PJ" checked={typeUser === 'PJ'} onChange={handlerTypeUser}  />
+                </Typography>
+              </Row>
 
-        <Paper variant="outlined" className="rounded-xl p-7 my-5" >
-          <Col>
-            <Typography variant="body1" className="text-black " >Dados da conta</Typography>
-            <TextInputCustom variant="filled" placeholder="Nome" />
-            <TextInputCustom variant="filled" placeholder="Como você quer ser chamado(a)?" />
-            <TextInputCustom variant="filled" placeholder="Email" />
-            <TextInputCustom variant="filled" placeholder="CPF" />
-            <TextInputCustom variant="filled" placeholder="Celular" />
-            <TextInputCustom variant="filled" placeholder="Senha" />
-          </Col>
 
-          <ButtonCustom variant="contained" className="mt-5" >Salvar alterações</ButtonCustom>
-        </Paper>
+              <Box>
+                <TextField
+                  focused
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="cpf"
+                  disabled
+                  defaultValue={user?.cpf}
+                />
+                <TextField
+                  margin="normal"
+                  fullWidth
+                  name="email"
+                  autoComplete="email"
+                  disabled
+                  defaultValue={user?.email}
+                />
+                <TextField
+                  focused
+                  margin="normal"
+                  required
+                  fullWidth
+                  label="Como você quer ser chamado(a)?"
+                  name="name"
+                  defaultValue={user?.name}
+                  helperText="Aparecerá em seu perfil, anúncios e chats."
+                />
+                <TextField
+                  focused
+                  margin="normal"
+                  fullWidth
+                  label="Telefone"
+                  name="phone"
+                  defaultValue={user?.phone}
+                />
+                <TextField
+                  focused
+                  margin="normal"
+                  fullWidth
+                  name="password"
+                  label="Senha"
+                  type="password"
+                  className='mb-5'
+                  helperText="Sua senha deve ter pelo menos 6 caracteres"
+                />
+                
+                <TextField
+                  focused
+                  margin="normal"
+                  required
+                  type="date"
+                  name="date_birth"
+                  defaultValue={user?.date_birth}
+                />
 
-        <Typography variant="body1" className="text-black mt-5" >Endereço</Typography>
-        <Typography variant="subtitle1" className="text-[grey] text-sm" >Configure seus dados de endereço</Typography>
+              <Typography variant="body1" className="text-black mt-3" >
+                Gênero
+              </Typography>
+                <Row container spacing={2}>
+                  <Typography variant="body1" color="black" className="" >
+                    Feminino <Radio name="gender" value="1" checked={gender === '1'} onChange={handlerGender} />
+                  </Typography>
 
-        <Paper variant="outlined" className="rounded-xl p-7 my-5" >
-          <Col>
-            <Typography variant="body1" className="text-black " >Dados de endereço</Typography>
+                  <Typography variant="body1" color="black" className="" >
+                   Masculíno <Radio name="gender" value="2" checked={gender === '2'} onChange={handlerGender} />
+                  </Typography>
 
-            <TextInputCustom variant="filled" placeholder="Nome" />
-            <TextInputCustom variant="filled" placeholder="Como você quer ser chamado(a)?" />
-            <TextInputCustom variant="filled" placeholder="Email" />
-            <TextInputCustom variant="filled" placeholder="CPF" />
-            <TextInputCustom variant="filled" placeholder="Celular" />
-            <TextInputCustom variant="filled" placeholder="Senha" />
-          </Col>
+                  <Typography variant="body1" color="black" className="" >
+                   Não informar <Radio name="gender" value="3" checked={gender === '3'} onChange={handlerGender} />
+                  </Typography>
+                </Row>
 
-          <ButtonCustom variant="contained" className="mt-5" >Salvar alterações</ButtonCustom>
-        </Paper>
+                <ButtonCustom
+                  type="submit"
+                  className='mt-5'
+                >
+                  Salvar alterações
+                </ButtonCustom>
+              </Box>
 
-      </Col>
-    </Row>
+            </form>
+
+          </Box>
+        </Col>
+      </Paper>
+
+      <Paper elevation={2} variant="outlined" className="rounded-xl p-5 max-w-[550px] mb-5" >
+        <Col mb={5}>
+          <Box pt={3}>
+
+            <form onSubmit={handleSubmitAddress}>
+
+              <Typography variant="h6" className="text-black" >
+                Meu endereço
+              </Typography>
+
+              <Grid2 container>
+                {inputsAddress.map((input) => (
+                  <Col size={{ md: input.size }} key={input.name}>
+                    <TextField
+                      focused
+                      margin="normal"
+                      required
+                      label={input.label}
+                      name={input.name}
+                      style={{ marginRight: 10 }}
+                      defaultValue={user?.address?.[input.name]}
+                    />
+                  </Col>
+                ))}
+                
+               
+                <ButtonCustom
+                  type="submit"
+                  className='mt-5'
+                >
+                  Salvar alterações
+                </ButtonCustom>
+              </Grid2>
+
+            </form>
+
+          </Box>
+        </Col>
+      </Paper>
+
+      {/*<Paper elevation={2} variant="outlined" className="rounded-xl p-5 max-w-[550px] mb-5" >
+        <Col mb={5}>
+          <Box pt={3}>
+
+            <form onSubmit={handleSubmitPhone}>
+
+              <Typography variant="h6" className="text-black" >
+                Meu telefone
+              </Typography>
+
+                  <Col>
+                    <TextField
+                      focused
+                      margin="normal"
+                      required
+                      label="Telefone"
+                      name="phone"
+                      style={{ marginRight: 10 }}
+                      defaultValue={user?.phones?.[0]?.number}
+                    />
+                  </Col>                
+               
+                <ButtonCustom
+                  type="submit"
+                  className='mt-5'
+                >
+                  Salvar alterações
+                </ButtonCustom>
+
+            </form>
+
+          </Box>
+        </Col>
+      </Paper>*/}
+
+    </Col>
   );
 }
+
+
+const inputsAddress = [
+  { label: 'CEP', name: 'zip_code', size: 12 },
+  { label: 'Rua', name: 'street', size: 12 },
+  { label: 'Número', name: 'number', size: 4 },
+  { label: 'Complemento', name: 'complement', size: 8 },
+  { label: 'Bairro', name: 'district', size: 4 },
+  { label: 'Cidade', name: 'city', size: 4 },
+  { label: 'Estado', name: 'state', size: 4 },
+]

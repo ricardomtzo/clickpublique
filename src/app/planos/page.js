@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Box, Button, Grid2, Paper, Switch, Typography } from "@mui/material";
 import { ArrowForwardOutlined, CheckOutlined, ChevronLeft, ChevronRight } from "@mui/icons-material";
 import { styled } from '@mui/material/styles';
+import PlansService from "@/services/PlansService";
 
 
 const Android12Switch = styled(Switch)(({ theme }) => ({
@@ -69,42 +70,37 @@ const planos = [
 
 export default function Cardpayment() {
 
+  const [plans, setPlans] = useState([]);
   const planosInicMobile = planos.filter((item, i) => i === 0);
 
-  //const [tipo, setTipo] = useState('CNPJ');
   const [currentPlano, setCurrentPlano] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [windowSize, setWindowSize] = useState({
     width: undefined,
     height: undefined,
   });
-  /*const handleTipo = (event) => {
-    setTipo(event.target.value);
-  };*/
-
 
   useEffect(() => {
-    // Handler para atualizar o estado com o tamanho da tela
+    getPlans();
     const handleResize = () => {
 
       setCurrentPlano(window.innerWidth < 600 ? planosInicMobile : planos);
-
       setWindowSize({
         width: window.innerWidth,
         height: window.innerHeight,
       });
     };
 
-    // Adiciona o listener quando o componente é montado
     window.addEventListener('resize', handleResize);
-
-    // Chama a função para definir o tamanho inicial
     handleResize();
-
-    // Remove o listener quando o componente é desmontado
     return () => window.removeEventListener('resize', handleResize);
+    
   }, []); 
-  //const currentITem = planos.find(item => item.btnSelected === true)
+
+  const getPlans =  async () => {
+    const response = await PlansService.getAll();
+    setPlans(response);
+  }
 
   const onChangePage = (index) => {
     if (index > planos.length - 1 || index < 0) return;
@@ -129,7 +125,7 @@ export default function Cardpayment() {
 
         <Box className="mt-10 max-h-[150px] text-center">
           <Typography className="mb-2 font-bold text-center" variant="h5" color="black">Preço & Planos</Typography>
-          <Typography className="mt-5" variant="p" color="gray">Escolhe um plano e comece agora a vender seus produtos</Typography>
+          <Typography className="mt-5" variant="p" color="gray">Escolhe um plano e comece agora a publicar seus anuncios</Typography>
         </Box>
 
         <Grid2
@@ -155,41 +151,40 @@ export default function Cardpayment() {
           overflowX: { md: 'auto', sm: 'auto', xs: 'auto' },
           flexDirection: { md: 'row', sm: 'column', xs: 'column' },
          }}*/>
-          {currentPlano?.map((plano) => (
+          {plans?.map((plano) => (
             <Paper
               key={plano.nome}
               variant="outlined"
-              className="height-[800px]  rounded-lg p-5"
+              className="height-[800px]  rounded-lg p-5 pb-[40px]"
               sx={{
-                maxWidth: { md: '270px', sm: '90%', xs: '90%' },
-                minWidth: { md: '270px', sm: '90%', xs: '90%' }
+                maxWidth: { md: '310px', sm: '90%', xs: '90%' },
+                minWidth: { md: '310px', sm: '90%', xs: '90%' }
               }}
             >
 
-              {plano.btnSelected && <Box
+              {!plano?.btnSelected && <Box
                 className="bg-[#000000] h-[25px] px-4 mt-[-20px] mr-[-20px] float-right w-[130px]"
                 sx={{ borderRadius: '0 10px 0px 10px' }}>
                 <Typography variant="body2" className="text-[13px] m-auto pt-1" color="#fff">MAIS VENDIDO</Typography>
               </Box>}
 
-              <Typography variant="subtitle2" className="text-[13px] m-auto mt-3" color="#3497F9">{plano.nome}</Typography>
+              <Typography variant="subtitle2" className="text-[13px] m-auto mt-3" color="#3497F9">{plano.name}</Typography>
               <Typography variant="h3" className="font-bold mt-5 mb-3" color="black">
-                <span className="text-[20px]">R$</span> {plano.preco}
-                <span className="text-[16px] font-normal"> / mês</span>
+                <span className="text-[20px]">R$</span> {plano.price}
+                <span className="text-[16px] font-normal"> {plano.ad_quantity} / mês</span>
               </Typography>
 
-              <Typography variant="p" className="mt-5 mb-5 text-[14px]" color="black">{plano.sub}</Typography>
-              {Array.from({ length: 6 }).map((_, index) => (
+              <Typography variant="p" className="mt-5 mb-5 text-[14px]" color="black">{plano.description}</Typography>
+              {Array.from({ length: 3 }).map((_, index) => (
                 <Typography className="mt-5 text-[15px]" key={index}><CheckOutlined color="success" /> Lorem ipsum</Typography>
-
               ))}
 
-              {!plano.btnSelected ?
+              {!plano?.btnSelected ?
                 <Button
                   variant="outlined"
                   onClick={handleNextPage}
                   style={{ textTransform: 'initial' }}
-                  className="mt-6 w-full bg-[#3497f91a] text-[#3497f9] border-0 w-[80%] h-[45px]">
+                  className="mt-10 w-full bg-[#3497f91a] text-[#3497f9] border-0 w-[80%] h-[45px]">
                   Testar Grátis
                   <ArrowForwardOutlined className="ml-8" fontSize="small" />
                 </Button>
@@ -198,7 +193,7 @@ export default function Cardpayment() {
                   variant="outlined"
                   onClick={handleNextPage}
                   style={{ textTransform: 'initial' }}
-                  className="mt-6 w-full rounded-lg bg-[#3497f9] text-[#ffff] border-0 w-[80%] h-[45px]">
+                  className="mt-10 w-full rounded-lg bg-[#3497f9] text-[#ffff] border-0 w-[80%] h-[45px]">
                   Testar Grátis
                   <ArrowForwardOutlined className="ml-8" fontSize="small" />
                 </Button>

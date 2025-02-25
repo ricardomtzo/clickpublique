@@ -13,6 +13,7 @@ import { environment } from "@/environments/environment";
 import { useAuth } from "@/app/hooks/AuthService";
 import { CheckCircleOutline, CloseSharp } from "@mui/icons-material";
 import { useRouter } from "next/navigation";
+import MultiImageUploader from "@/components/ImagesSelect";
 
 
 export default function Home() {
@@ -57,7 +58,14 @@ export default function Home() {
     const formData = new FormData();
     formData.append('user_id', user.id);
     Object.keys(form).forEach(key => {
-      formData.append(key, form[key]);
+      if(key === 'file'){
+        for (let i = 0; i < form.file.length; i++) {
+                
+          formData.append(key + i, form.file[i]);
+        }
+      }else{
+        formData.append(key, form[key]);
+      }
     });
 
     fetch(`${environment.apiUrl}/ads`, {
@@ -189,7 +197,7 @@ export default function Home() {
                   <Alert className="w-[100%] mb-10" severity="info">Boas fotos te ajudam a tornar seu anúncio mais visível</Alert>
 
                   {/*<Image src={fotos} alt="carro" />*/}
-                  <input type="file" name="file" onChange={(e) => setInputValue('file', e.target?.files?.[0])} />
+                  <MultiImageUploader onChange={(images: any) => setInputValue('file', images)} />
                 </Col>
             },
             {

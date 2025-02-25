@@ -19,6 +19,7 @@ import logo from '../app/assets/imgs/logo.jpg';
 import { Avatar, Button } from '@mui/material';
 import { ChatBubbleOutline, DashboardOutlined } from '@mui/icons-material';
 import { useAuth } from '@/app/hooks/AuthService';
+import { useRouter } from 'next/navigation';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -62,6 +63,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export default function Navbar() {
 
+    const route = useRouter();
     const { user } = useAuth();
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -89,7 +91,7 @@ export default function Navbar() {
     };
 
     const handleNavigation = (location: string) => {
-        window.location.href = location;
+        route.push(location);
     }
     
     const menuId = 'primary-search-account-menu';
@@ -110,6 +112,7 @@ export default function Navbar() {
             onClose={handleMenuClose}
         >
             <MenuItem onClick={() => handleNavigation('/perfil')}>Meu Perfil</MenuItem>
+            <MenuItem onClick={() => handleNavigation('/meu-cadastro')}>Meu cadastro</MenuItem>
             <MenuItem onClick={() => handleNavigation('/login')}>Sair</MenuItem>
         </Menu>
     );

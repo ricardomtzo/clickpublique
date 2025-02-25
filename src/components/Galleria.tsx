@@ -22,16 +22,17 @@ export default function Gallerie({ imageList }: any) {
 
     useEffect(() => {
         setImages(imageList)
+        console.log(imageList)
     }, [imageList])
 
     const itemTemplate = (item: any) => {
         const img = `${environment.storageUrl}/${item?.path}` || '';
-        return <img src={img} alt={item.alt} style={{ width: '100%', display: 'block' }} />;
+        return <img src={img} alt={item.alt} style={{ width: '100%', height: '500px', display: 'block' }} />;
     }
 
     const thumbnailTemplate = (item: any) => {
         const img = `${environment.storageUrl}/${item?.path}` || '';
-        return <img src={item.src} alt={item.alt} style={{ display: 'block' }} />;
+        return <img src={img} alt={item.name} style={{ display: 'block', height: 60 }} />;
     }
 
     return (
