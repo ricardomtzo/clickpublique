@@ -69,7 +69,7 @@ export default function Home() {
               icon={<CalendarTodayOutlined className="text-[18px] mr-2" />}
             />
             <TextIcon
-              text={`${user?.address.street}, ${user?.address.number} - ${user?.address.district}, ${user?.address.city} - ${user?.address.state}`}
+              text={`${user?.address?.street}, ${user?.address?.number} - ${user?.address?.district}, ${user?.address?.city} - ${user?.address?.state}`}
               icon={<LocationOnOutlined className="text-[18px] mr-2" />}
             />
 

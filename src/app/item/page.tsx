@@ -8,6 +8,8 @@ import ProductsList from "@/components/Products";
 import { useSearchParams } from "next/navigation";
 import adsService from "@/services/AdsService";
 import categoryService from "@/services/CategorieService";
+import { Col, RowScroll } from "@/components/Grids";
+import SingleAd from "@/components/SingleAd";
 
 const typesCat: any = {
   'App\\Models\\CarAd': '6'
@@ -19,34 +21,45 @@ export default function Home() {
   const idAd = searchParams.get("ad") || '';
 
   const [ad, setAd] = useState<any>(null);
+  const [ads, setAds] = useState<any>([]);
   const [category, setCategory] = useState<any>([]);
+
 
   useEffect(() => {
 
     getAdById()
-    .then((data) => getCategory(data));
-    
+      .then((data) => getCategory(data));
+    getAds();
   }, [])
 
   const getAdById = async () => {
     try {
-    const response = await adsService.getById(idAd);
-    setAd(response);
-    console.log(response);
-    return response;
+      const response = await adsService.getById(idAd);
+      setAd(response);
+      console.log(response);
+      return response;
     } catch (error) {
       console.error(error);
     }
   }
 
   const getCategory = async (data: any) => {
-      try {
-        const response = await categoryService.getAll();
-        console.log(data?.ad_type_type);
-        setCategory(response.find((item: any) => item.type == typesCat[data?.ad_type_type] ));
-      } catch (error) {
-        console.error(error);
-      }
+    try {
+      const response = await categoryService.getAll();
+      console.log(data?.ad_type_type);
+      setCategory(response.find((item: any) => item.type == typesCat[data?.ad_type_type]));
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const getAds = async () => {
+    try {
+      const response = await adsService.getAll();
+      setAds(response);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   const breadcrumbs = [
@@ -87,6 +100,51 @@ export default function Home() {
             Publicado em {new Date(ad?.created_at).toLocaleDateString()}
           </Typography>
           <Gallerie imageList={ad?.files} />
+
+          <Grid>
+            <Typography variant="h5" className="text-black mt-5">R$ {ad?.price}</Typography>
+
+            <Typography variant="body2" className="text-grey mt-5 mb-7" color="text.secondary">
+              {ad?.description}
+            </Typography>
+
+            <Grid container spacing={2}>
+              <Button
+
+                variant="outlined"
+                startIcon={<FavoriteBorder />}
+                className="mb-5 rounded-full"
+              >
+                Favoritar
+              </Button>
+
+              <Button
+
+                variant="outlined"
+                startIcon={<Share />}
+                className="mb-5 rounded-full"
+              >
+                Compartilhar
+              </Button>
+
+              <Button
+
+                variant="outlined"
+                startIcon={<Flag />}
+                className="mb-5 rounded-full"
+              >
+                Denunciar
+              </Button>
+            </Grid>
+
+            <LineSpace margin="0" width="100px" text="Detalhes" />
+
+            <LineSpace margin="0" width="120px" text="Localização" />
+
+            <Typography variant="body2" className="text-grey mt-2 mb-7" color="text.secondary">
+              {ad?.ad_type?.cep}
+            </Typography>
+          </Grid>
         </Grid>
 
         <Grid className="" size={{ xs: 12, md: 4 }}>
@@ -138,50 +196,14 @@ export default function Home() {
           </Paper>
         </Grid>
 
-        <Grid>
-          <Typography variant="h5" className="text-black ">R$ {ad?.price}</Typography>
+        <LineSpace margin="0" width="320px" text="Também podem te interessar" />
 
-          <Typography variant="body2" className="text-grey mt-5 mb-7" color="text.secondary">
-            {ad?.description}
-          </Typography>
-
-          <Grid container spacing={2}>
-            <Button
-
-              variant="outlined"
-              startIcon={<FavoriteBorder />}
-              className="mb-5 rounded-full"
-            >
-              Favoritar
-            </Button>
-
-            <Button
-
-              variant="outlined"
-              startIcon={<Share />}
-              className="mb-5 rounded-full"
-            >
-              Compartilhar
-            </Button>
-
-            <Button
-
-              variant="outlined"
-              startIcon={<Flag />}
-              className="mb-5 rounded-full"
-            >
-              Denunciar
-            </Button>
-          </Grid>
-
-          <LineSpace margin="0" width="100px" text="Detalhes"/>
-
-          <LineSpace margin="0" width="120px" text="Localização"/>
-
-          <LineSpace margin="0" width="320px" text="Também podem te interessar"/>
-         
-          <ProductsList />
-        </Grid>
+        <br />
+        <RowScroll>
+          {ads.map((ad: any, idx: number) => (
+            idx < 10 && <Col key={'ad' + idx} className="w-[230px] mr-2" style={{ display: 'inline-block' }} ><SingleAd key={'ad' + idx} ad={ad} /></Col>
+          ))}
+        </RowScroll>
 
       </Grid>
     </div >

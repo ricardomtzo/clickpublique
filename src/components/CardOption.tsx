@@ -1,8 +1,10 @@
 import { Paper, Typography } from "@mui/material"
 
 const style = {
-    width: 150,
-    height: 150,
+    width: 170,
+    height: 170,
+    maxWidth: 170,
+    maxHeight: 170,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',

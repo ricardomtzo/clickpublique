@@ -1,9 +1,15 @@
 'use client';
+import { useEffect, useState } from "react";
 import { environment } from "@/environments/environment";
 import { Box, Grid2 as Grid, Paper, Typography } from "@mui/material";
 
 export default function ProductsList({ ads }: any) {
 
+    const [adsList, setAdsList] = useState<any>([]);
+
+    useEffect(() => {
+        setAdsList(ads);
+    }, [ads]);
 
     return (
 
@@ -11,7 +17,7 @@ export default function ProductsList({ ads }: any) {
             container
             spacing={{ xs: 1, md: 1 }}
             alignItems={'center'} mt={2} >
-            {ads.map((ad: any, index: number) => {
+            {adsList?.map((ad: any, index: number) => {
 
                 const img = `${environment.storageUrl}/${ad?.files?.[0]?.path}` || '';
                 return (

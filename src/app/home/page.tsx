@@ -7,6 +7,7 @@ import SingleAd from "@/components/SingleAd";
 import { environment } from "@/environments/environment";
 import adsService from "@/services/AdsService";
 import categoryService from "@/services/CategorieService";
+import { Col, Row, RowScroll } from "@/components/Grids";
 
 const hover = {
   cursor: 'pointer',
@@ -64,65 +65,53 @@ export default function Home() {
       </Grid>
 
 
-      <Grid container spacing={{ xs: 2, md: 2 }} justifyContent={'center'} alignItems={'center'}>
+      <RowScroll justifyContent={'center'} alignItems={'center'}>
         {categories.map((category: any, index: number) => {
 
           const img = `${environment.storageUrl}/${category?.files?.[0].path}`;
           return (
-            <Grid key={index} sx={hover} onClick={onSelect}>
-              <Paper elevation={2} variant="outlined" className="rounded-full h-[80px] w-[80px] m-auto p-4" >
-                <img
-                  src={img}
-                  alt="Logo"
-                  //width='70px'
-                  //height='150px'
-                  style={{ objectFit: 'contain', width: '100%', height: '100%' }} />
-              </Paper>
-              <Typography className="text-black text-center text-sm" style={{ color: 'grey' }}> </Typography>
-            </Grid>
+            <Col key={'cat' + index} className="w-[80px] mr-2" style={{ display: 'inline-block' }} >
+              <Grid sx={hover} onClick={onSelect}>
+                <Paper elevation={2} variant="outlined" className="rounded-full h-[80px] w-[80px] m-auto p-4" >
+                  <img
+                    src={img}
+                    alt="Logo"
+                    style={{ objectFit: 'contain', width: '100%', height: '100%' }} />
+                </Paper>
+                <Typography className="text-black text-center text-sm" style={{ color: 'grey' }}> </Typography>
+              </Grid>
+            </Col>
           )
         })}
-      </Grid>
+      </RowScroll>
 
       <Typography variant="h6" className="text-black mt-5">POPULARES</Typography>
       <Box className="h-[2px] bg-[#01004c] mb-5 mt-1 w-[200px]" />
 
-      <Grid
-        container
-        spacing={{ xs: 1, md: 1 }}
-        alignItems={'center'} mt={2} >
+      <RowScroll className="py-5 px-2">
         {ads.map((ad: any, idx: number) => (
-          idx < 10 && <SingleAd key={'ad' + idx} ad={ad} />
+          idx < 10 && <Col key={'ad' + idx} className="w-[230px] mr-2" style={{ display: 'inline-block' }} ><SingleAd key={'ad' + idx} ad={ad} /></Col>
         ))}
-      </Grid>
+      </RowScroll>
 
       <Box className=" bg-[#11cd5454] mb-5 mt-1 w-[100%] absolute left-0 pb-10 mb-10" >
         <Typography variant="h6" className="text-black mt-7 ml-5 ">ANUNCIOS PATROCINADOS</Typography>
         <Box className="h-[2px] bg-[#01004c] mb-5 mt-1 w-[200px]" />
-
-        <Grid
-          container
-          spacing={{ xs: 1, md: 1 }}
-          alignItems={'center'} mt={2}
-          justifyContent={'center'} >
+        <RowScroll className="py-5 px-2">
           {ads.map((ad: any, idx: number) => (
-            idx < 5 && <SingleAd key={'ad' + idx} ad={ad} />
+            idx < 5 && <Col key={'ad1' + idx} className="w-[230px] ml-3" style={{ display: 'inline-block' }} ><SingleAd ad={ad} /></Col>
           ))}
-        </Grid>
+        </RowScroll>
       </Box>
-      <Typography variant="h6" className="text-black mt-[430px]">NOVIDADE</Typography>
+
+      <Typography variant="h6" className="text-black mt-[460px]">NOVIDADE</Typography>
       <Box className="h-[2px] bg-[#01004c] mb-5 mt-1 w-[200px]" />
 
-      <Grid
-        container
-        spacing={{ xs: 1, md: 1 }}
-        alignItems={'center'} mt={2} >
+      <RowScroll className="py-5 px-2">
         {ads.map((ad: any, idx: number) => (
-          idx < 10 && <SingleAd key={'ad' + idx} ad={ad} />
+          idx < 10 && <Col key={'ad2' + idx} className="w-[230px] mr-2" style={{ display: 'inline-block' }} ><SingleAd key={'ad' + idx} ad={ad} /></Col>
         ))}
-
-      </Grid>
-
+      </RowScroll>
 
     </div>
   );

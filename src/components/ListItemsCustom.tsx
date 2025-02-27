@@ -9,14 +9,16 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import StarBorder from '@mui/icons-material/StarBorder';
+import { useRouter } from 'next/navigation';
 
 
 export default function ListItemsCustom({items}: any) {
+    const route = useRouter();
     const [open, setOpen] = React.useState(false);
     const [itemsList, setItemsList] = React.useState(items);
 
     const handleClick = () => {
-        window.location.href = "/cadastrar-anuncio/informacoes";
+        route.push("/cadastrar-anuncio/informacoes");
         //setOpen(!open);
     };
 

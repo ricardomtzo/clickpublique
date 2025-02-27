@@ -6,13 +6,14 @@ import { StepperPanel } from 'primereact/stepperpanel';
 import { Col } from "./Grids";
 import { Button } from "@mui/material";
 import { ArrowBack, ArrowForward } from "@mui/icons-material";
+import { isMobile } from "@/config/utils";
 
 export default function StteperCustom({ contents }: any) {
     const stepperRef = useRef<any>(null);
 
     return (
         <Col sx={{ width: '100%' }}>
-            <Stepper ref={stepperRef} orientation="vertical">
+            <Stepper ref={stepperRef} orientation={isMobile() ? 'horizontal' : 'vertical'}>
 
                 {contents?.map((item: any, index: number) => (
                     <StepperPanel header={item.header} key={index} >

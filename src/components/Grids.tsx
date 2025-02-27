@@ -12,3 +12,9 @@ export const Row = (props: Grid2Props) => {
         <Grid2  {...props} sx={{ }} />
     )
 }
+
+export const RowScroll = (props: Grid2Props) => {
+    return (
+        <Grid2  {...props} sx={{ overflowX: 'auto', overflowY: 'hidden', whiteSpace: 'nowrap', width: '100%' }} />
+    )
+}

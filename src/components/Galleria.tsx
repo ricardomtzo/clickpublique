@@ -27,7 +27,7 @@ export default function Gallerie({ imageList }: any) {
 
     const itemTemplate = (item: any) => {
         const img = `${environment.storageUrl}/${item?.path}` || '';
-        return <img src={img} alt={item.alt} style={{ width: '100%', height: '500px', display: 'block' }} />;
+        return <img src={img} alt={item.alt} style={{ width: '100%', height: '300px', display: 'block', objectFit: 'cover' }} />;
     }
 
     const thumbnailTemplate = (item: any) => {

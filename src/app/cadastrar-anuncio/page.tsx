@@ -2,11 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { Grid2, Typography } from "@mui/material";
 import CardOption from "@/components/CardOption";
-
-import cama from '../assets/imgs/cama.png'
-import carro from '../assets/imgs/carro.jpeg'
-import casa from '../assets/imgs/casa.png'
-import game from '../assets/imgs/game.png'
 import ModalCustom from "@/components/ModalCustom";
 
 const urlBase = 'http://localhost:8000';
@@ -17,31 +12,11 @@ export default function Home() {
   const [categories, setCategories] = useState([]);
   const [selectedCategorie, setSelectedCategorie] = useState(null);
 
-  const options1 = [
-    {
-      img: carro,
-      label: 'Autos e Peças',
-    },
-    {
-      img: cama,
-      label: 'Produtos e Outros',
-    },
-    {
-      img: casa,
-      label: 'Imóveis',
-    },
-    {
-      img: game,
-      label: 'Serviços e Vagas',
-    },
-  ];
-
-
   useEffect(() => {
     getCategories();
   }, []);
 
-  function getCategories(){
+  function getCategories() {
 
     fetch(urlBase + '/api/categories')
       .then(response => response.json())
@@ -51,20 +26,20 @@ export default function Home() {
       })
       .catch(error => console.error(error));
   }
-  
 
-  const Items = ({categorie}: any ) => {
+
+  const Items = ({ categorie }: any) => {
     const image = urlBase + '/storage/' + categorie?.files?.[0].path;
     return (
       <Grid2 justifyItems="center">
-        <CardOption img={image} label={categorie.name} onClick={() => {setOpen(true); setSelectedCategorie(categorie)}} />
+        <CardOption img={image} label={categorie.name} onClick={() => { setOpen(true); setSelectedCategorie(categorie) }} />
       </Grid2>
     )
   }
 
   return (
     <Grid2
-      p={10}
+      p={3}
       m="auto"
       container
       justifyContent="center"
@@ -76,7 +51,7 @@ export default function Home() {
         ))}
       </Grid2>
 
-      <ModalCustom  open={open} selected={selectedCategorie} onClose={() => setOpen(false)} />
+      <ModalCustom open={open} selected={selectedCategorie} onClose={() => setOpen(false)} />
     </Grid2>
   );
 }

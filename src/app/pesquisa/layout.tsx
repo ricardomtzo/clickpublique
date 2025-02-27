@@ -40,7 +40,7 @@ export default function RootLayout({
       >
         <CssBaseline />
         <Navbar />
-        <Container style={{ padding: '20px' }}>
+        <Container style={{ padding: '20px', margin: 'auto' }}>
           {children}
         </Container>
 

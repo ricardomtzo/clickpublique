@@ -12,14 +12,13 @@ import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
-import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import MoreIcon from '@mui/icons-material/MoreVert';
 import logo from '../app/assets/imgs/logo.jpg';
 import { Avatar, Button } from '@mui/material';
-import { ChatBubbleOutline, DashboardOutlined } from '@mui/icons-material';
+import { AddCircleOutlineOutlined, HomeOutlined, MenuOutlined, PermIdentityOutlined, PostAddOutlined, ReceiptLongOutlined, SearchOutlined } from '@mui/icons-material';
 import { useAuth } from '@/app/hooks/AuthService';
 import { useRouter } from 'next/navigation';
+import { Col, Row } from './Grids';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -66,6 +65,7 @@ export default function Navbar() {
     const route = useRouter();
     const { user } = useAuth();
 
+    const [isMobile, setIsMobile] = React.useState(window.innerWidth < 600);
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
         React.useState<null | HTMLElement>(null);
@@ -93,7 +93,7 @@ export default function Navbar() {
     const handleNavigation = (location: string) => {
         route.push(location);
     }
-    
+
     const menuId = 'primary-search-account-menu';
     const renderMenu = (
         <Menu
@@ -134,69 +134,65 @@ export default function Navbar() {
             open={isMobileMenuOpen}
             onClose={handleMobileMenuClose}
         >
-            <MenuItem>
-                <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-                    <Badge badgeContent={4} color="error">
-                        <MailIcon />
-                    </Badge>
+            <MenuItem onClick={() => handleNavigation('/meu-cadastro')}>
+                <IconButton size="large" color="inherit">
+                    <PermIdentityOutlined />
                 </IconButton>
-                <p>Messages</p>
+                <p>Meus dados</p>
             </MenuItem>
-            <MenuItem>
+            <MenuItem onClick={() => handleNavigation('/perfil')}>
                 <IconButton
                     size="large"
                     aria-label="show 17 new notifications"
                     color="inherit"
                 >
-                    <Badge badgeContent={17} color="error">
-                        <NotificationsIcon />
-                    </Badge>
+                    <PostAddOutlined />
                 </IconButton>
-                <p>Notifications</p>
+                <p>Meu perfil</p>
             </MenuItem>
             <MenuItem onClick={handleProfileMenuOpen}>
-                <Avatar>H</Avatar>
+                <Avatar>{user?.name?.charAt(0)}</Avatar>
+                <p className='ml-2'>{user?.name} </p>
             </MenuItem>
         </Menu>
     );
 
-    return (
-        <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static" className='pt-2' style={{ height: '90px', backgroundColor: '#01004c' }}>
-                <Toolbar style={{ width: '90%', margin: '0 auto' }}>
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        component="div"
-                        sx={{ display: { xs: 'none', sm: 'block' } }}
-                    >
-                    </Typography>
+    const desktopMenu = (
+        <AppBar position="static" className='pt-2' style={{ height: '80px', backgroundColor: '#01004c' }}>
+            <Toolbar style={{ width: '90%', margin: '0 auto' }}>
+                <Typography
+                    variant="h6"
+                    noWrap
+                    component="div"
+                    sx={{ display: { xs: 'none', sm: 'block' } }}
+                >
+                </Typography>
 
-                    <img onClick={() => handleNavigation('/home')} src={logo.src} alt="Logo" width={70} height={80} style={{ maxHeight: 80, objectFit: 'cover', borderRadius: 10, cursor: 'pointer' }} />
+                <img onClick={() => handleNavigation('/home')} src={logo.src} alt="Logo" width={70} height={80} style={{ maxHeight: 80, objectFit: 'cover', borderRadius: 10, cursor: 'pointer' }} />
 
-                    <Button
-                        variant='contained'
-                        className='rounded-full ml-5 p-2'
-                        style={{ backgroundColor: '#ffff', color: '#01004c', width: '350px' }}
-                        onClick={() => handleNavigation('/cadastrar-anuncio')}>
-                        Anunciar grátis
-                    </Button>
+                <Button
+                    variant='contained'
+                    className='rounded-full ml-5 px-5 '
+                    style={{ backgroundColor: '#ffff', color: '#01004c' }}
+                    onClick={() => handleNavigation('/cadastrar-anuncio')}>
+                    Anunciar
+                </Button>
 
-                    <Search className='w-[50%]'>
-                        <SearchIconWrapper>
-                            <SearchIcon />
-                        </SearchIconWrapper>
-                        <StyledInputBase
-                            placeholder="Procurar..."
-                            inputProps={{ 'aria-label': 'search' }}
-                        />
-                        
-                    </Search>
-                    <Button onClick={() => handleNavigation('/pesquisa')} variant="outlined" size='small' className='text-[#fff] border-[#fff] mr-5 pt-1'>Buscar</Button>
+                <Search className='w-[50%]'>
+                    <SearchIconWrapper>
+                        <SearchIcon />
+                    </SearchIconWrapper>
+                    <StyledInputBase
+                        placeholder="Procurar..."
+                        inputProps={{ 'aria-label': 'search' }}
+                    />
 
-                    <Box sx={{ flexGrow: 1 }} />
-                    <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                        {/*<IconButton size="large" aria-label="show 4 new mails" color="inherit">
+                </Search>
+                <Button onClick={() => handleNavigation('/pesquisa')} variant="outlined" size='small' className='text-[#fff] border-[#fff] mr-5 pt-1'>Buscar</Button>
+
+                <Box sx={{ flexGrow: 1 }} />
+                <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+                    {/*<IconButton size="large" aria-label="show 4 new mails" color="inherit">
                             <DashboardOutlined />
                         </IconButton>
 
@@ -205,52 +201,99 @@ export default function Navbar() {
                                 <ChatBubbleOutline />
                             </Badge>
                         </IconButton>*/}
-                        <IconButton
-                            size="large"
-                            aria-label="show 17 new notifications"
-                            color="inherit"
-                        >
-                            <Badge badgeContent={17} color="error">
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton>
-                        <IconButton
-                            size="small"
-                            edge="end"
-                            aria-label="account of current user"
-                            aria-controls={menuId}
-                            aria-haspopup="true"
-                            onClick={handleProfileMenuOpen}
-                            color="inherit"
-                            className='ml-2 border rounded-full border-solid border-grey'
-                        >
-                            <Avatar>H</Avatar>
-                            <Typography className='ml-2 mr-2'>{user?.name}</Typography>
-                        </IconButton>
+                    <IconButton
+                        size="large"
+                        aria-label="show 17 new notifications"
+                        color="inherit"
+                    >
+                        <Badge badgeContent={17} color="error">
+                            <NotificationsIcon />
+                        </Badge>
+                    </IconButton>
+                    <IconButton
+                        size="small"
+                        edge="end"
+                        aria-label="account of current user"
+                        aria-controls={menuId}
+                        aria-haspopup="true"
+                        onClick={handleProfileMenuOpen}
+                        color="inherit"
+                        className='ml-2 border rounded-full border-solid border-grey'
+                    >
+                        <Avatar>H</Avatar>
+                        <Typography className='ml-2 mr-2'>{user?.name}</Typography>
+                    </IconButton>
+                </Box>
+                <Button
+                    variant='contained'
+                    className='rounded-full ml-5 px-5'
+                    style={{ backgroundColor: '#12d658', color: '#fff' }}
+                    onClick={() => handleNavigation('/planos')}>
+                    Planos
+                </Button>
+            </Toolbar>
+        </AppBar>
+    )
+
+    const mobileIcon = (title: string, page: string, icon: any) => {
+        return (
+            <Col className='flex'  onClick={() => handleNavigation('/' + page)}>
+                {icon}
+                <p className='text-[#9f9f9f] text-xs'>{title}</p>
+            </Col>
+        )
+    }
+
+    const mobileMenu = (
+        <AppBar position="fixed" className='py-3 px-5 bg-[#f2f2f2] border-t-[1px] border-solid border-[#bdbdbd]' style={{ bottom: 0, top: 'auto' }}>
+            <Row className='w-full flex justify-between'>
+                {mobileIcon('Início', 'home', <HomeOutlined className='m-auto text-[#9f9f9f] text-3xl' />)}
+                {mobileIcon('Buscar', 'pesquisa', <SearchOutlined className='m-auto text-[#9f9f9f] text-3xl' />)}
+                {mobileIcon('Anunciar', 'cadastrar-anuncio', <AddCircleOutlineOutlined className='m-auto text-[#9f9f9f] text-3xl' />)}
+                {mobileIcon('Planos', 'planos', <ReceiptLongOutlined className='m-auto text-[#9f9f9f] text-3xl' />)}
+                <Col onClick={handleMobileMenuOpen}>
+                    <MenuOutlined className='text-[#9f9f9f] text-3xl' />
+                    <p className='text-[#9f9f9f] text-xs'>Menu</p>
+                </Col>
+            </Row>
+        </AppBar>
+    )
+
+    
+    return (
+        <Box sx={{ flexGrow: 1 }}>
+            {isMobile &&
+                <AppBar position="static" className='pt-2' style={{ height: '80px', backgroundColor: '#01004c' }}>
+                    <Box sx={{ display: { xs: 'flex', md: 'none' } }} alignItems="center">
+                        <img
+                            onClick={() => handleNavigation('/home')}
+                            src={logo.src} alt="Logo"
+                            width={60} height={70}
+                            style={{ maxHeight: 80, objectFit: 'cover', borderRadius: 10, cursor: 'pointer', padding: 10 }}
+                        />
+                        <Search className=''>
+                            <SearchIconWrapper>
+                                <SearchIcon />
+                            </SearchIconWrapper>
+                            <StyledInputBase
+                                placeholder="Procurar..."
+                                inputProps={{ 'aria-label': 'search' }}
+                            />
+
+                        </Search>
+                        <Button onClick={() => handleNavigation('/pesquisa')} variant="outlined" size='small' className='text-[#fff] border-[#fff] mr-5 pt-1'>Buscar</Button>
+
                     </Box>
-                    <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-                        <IconButton
-                            size="large"
-                            aria-label="show more"
-                            aria-controls={mobileMenuId}
-                            aria-haspopup="true"
-                            onClick={handleMobileMenuOpen}
-                            color="inherit"
-                        >
-                            <MoreIcon />
-                        </IconButton>
-                    </Box>
-                    <Button
-                        variant='contained'
-                        className='rounded-full ml-5 p-2'
-                        style={{ backgroundColor: '#12d658', color: '#fff', width: '350px' }}
-                        onClick={() => handleNavigation('/planos')}>
-                        Planos
-                    </Button>
-                </Toolbar>
-            </AppBar>
+                </AppBar>
+            }
+
+            {isMobile ?
+                mobileMenu
+                :
+                desktopMenu
+            }
             {renderMobileMenu}
             {renderMenu}
-        </Box>
+        </Box >
     );
 }

@@ -14,6 +14,7 @@ import { useAuth } from "@/app/hooks/AuthService";
 import { CheckCircleOutline, CloseSharp } from "@mui/icons-material";
 import { useRouter } from "next/navigation";
 import MultiImageUploader from "@/components/ImagesSelect";
+import { isMobile } from "@/config/utils";
 
 
 export default function Home() {
@@ -58,12 +59,12 @@ export default function Home() {
     const formData = new FormData();
     formData.append('user_id', user.id);
     Object.keys(form).forEach(key => {
-      if(key === 'file'){
+      if (key === 'file') {
         for (let i = 0; i < form.file.length; i++) {
-                
+
           formData.append(key + i, form.file[i]);
         }
-      }else{
+      } else {
         formData.append(key, form[key]);
       }
     });
@@ -121,9 +122,9 @@ export default function Home() {
   };
 
   return (
-    <Container>
+    <Col className="w-[100%] py-5 px-4 pb-20">
 
-      <form method="post" encType="multipart/form-data">
+      <form method="post" encType="multipart/form-data" className=" m-auto">
         <input type="hidden" name="user_id" value="7" />
         <StteperCustom
           contents={[
@@ -131,7 +132,7 @@ export default function Home() {
               header: 'Informações do veículo',
               content:
                 <Col>
-                  <Typography variant="h4" color="black" className="w-[800px] mb-5" >Qual veículo você quer anunciar?</Typography>
+                  <Typography variant="h6" color="black" className="mb-5" >Qual veículo você quer anunciar?</Typography>
                   <Alert className="w-[100%]" severity="info">Os itens com (*) são obrigatórios</Alert>
 
                   <TextInputCustom label="marca" name="brand" onChange={(e) => setInputValue('brand', e.target.value)} />
@@ -148,7 +149,7 @@ export default function Home() {
               header: 'Informações do veículo',
               content:
                 <Col>
-                  <Typography variant="h4" color="black" className="w-[800px] mb-5" >Informações do veículo
+                  <Typography variant="h6" color="black" className="mb-5" >Informações do veículo
                   </Typography>
                   <Alert className="w-[100%]" severity="info">Os itens com (*) são obrigatórios</Alert>
 
@@ -168,7 +169,7 @@ export default function Home() {
               header: 'Itens do veículo',
               content:
                 <Col>
-                  <Typography variant="h4" color="black" className="w-[800px]  mb-5" >Itens de série e opcionais do seu veículo</Typography>
+                  <Typography variant="h6" color="black" className=" mb-5" >Itens de série e opcionais do seu veículo</Typography>
                   <Row container spacing={1}>
                     {itensCarro.map((item) => (
                       <ButtonSelect key={item} selected={form?.series_items?.includes(item)} onClick={() => onSelectSeriesItems(item)}>{item}</ButtonSelect>
@@ -181,7 +182,7 @@ export default function Home() {
               header: 'Informações',
               content:
                 <Col>
-                  <Typography variant="h4" color="black" className="w-[800px]  mb-5" >Informações adicionais</Typography>
+                  <Typography variant="h6" color="black" className=" mb-5" >Informações adicionais</Typography>
                   <Row container spacing={1}>
                     {caracteristicasCarro.map((item) => (
                       <ButtonSelect key={item} selected={form?.additional_info?.includes(item)} onClick={() => onSelectAdditionalInfo(item)}>{item}</ButtonSelect>
@@ -193,7 +194,7 @@ export default function Home() {
               header: 'Fotos',
               content:
                 <Col>
-                  <Typography variant="h4" color="black" className="w-[800px]  mb-5" >Escolha as fotos do seu anúncio</Typography>
+                  <Typography variant="h6" color="black" className=" mb-5" >Escolha as fotos do seu anúncio</Typography>
                   <Alert className="w-[100%] mb-10" severity="info">Boas fotos te ajudam a tornar seu anúncio mais visível</Alert>
 
                   {/*<Image src={fotos} alt="carro" />*/}
@@ -204,7 +205,7 @@ export default function Home() {
               header: 'Valor',
               content:
                 <Col>
-                  <Typography variant="h4" color="black" className="w-[800px]  mb-5" >Defina o valor do veículo</Typography>
+                  <Typography variant="h6" color="black" className=" mb-5" >Defina o valor do veículo</Typography>
 
                   <Row container>
                     <Typography variant="h2" color="black" className="mb-5 text-[#01004c] font-[400]" >R$ </Typography>
@@ -225,7 +226,7 @@ export default function Home() {
 
                   <Row container spacing={2}>
                     {precosfipe.map((item, index) => (
-                      <Paper key={'fipe'+index} className="mb-5 w-[150px] pt-3 " variant="outlined">
+                      <Paper key={'fipe' + index} className="mb-5 w-[150px] pt-3 " variant="outlined">
                         <Typography variant="body1" color="black" className="text-center font-[500]" >
                           {item.valor}
                         </Typography>
@@ -246,7 +247,7 @@ export default function Home() {
               header: 'Para finalizar',
               content:
                 <Col>
-                  <Typography variant="h4" color="black" className="w-[800px]  mb-5" >Crie um título e compartilhe </Typography>
+                  <Typography variant="h6" color="black" className=" mb-5" >Crie um título e compartilhe </Typography>
                   <Alert className="w-[100%] mb-10" severity="info">Anúncios mais completos vendem mais rápido.
                   </Alert>
 
@@ -300,7 +301,7 @@ export default function Home() {
           </Paper>
         </Grid2>
       </Modal>
-    </Container>
+    </Col>
   );
 }
 
