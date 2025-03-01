@@ -41,6 +41,7 @@ export default function Home() {
     <Grid2
       p={3}
       m="auto"
+      pb={10}
       container
       justifyContent="center"
       sx={{ width: { xs: '100%', sm: '100%', md: '60%', lg: '60%', xl: '60%' } }} >

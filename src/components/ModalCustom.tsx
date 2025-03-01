@@ -18,6 +18,8 @@ export default function ModalCustom({ open, selected, onClose }: any) {
 
     };*/
 
+    console.log(selected);
+
     const items = selected?.children.map((item: any) => item.name);
     return (
         <React.Fragment>
@@ -32,7 +34,7 @@ export default function ModalCustom({ open, selected, onClose }: any) {
                     <Button className='float-right' onClick={onClose}><CloseOutlined /></Button>
                 </DialogTitle>
                 <DialogContent>
-                    <ListItemsCustom items={items} />
+                    <ListItemsCustom items={items} categoryType={selected?.type} />
                 </DialogContent>
                 {/*<DialogActions>
                     <Button onClick={onClose}>Disagree</Button>

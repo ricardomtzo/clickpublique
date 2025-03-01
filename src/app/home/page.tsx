@@ -65,12 +65,12 @@ export default function Home() {
       </Grid>
 
 
-      <RowScroll justifyContent={'center'} alignItems={'center'}>
+      <RowScroll className="py-3">
         {categories.map((category: any, index: number) => {
 
           const img = `${environment.storageUrl}/${category?.files?.[0].path}`;
           return (
-            <Col key={'cat' + index} className="w-[80px] mr-2" style={{ display: 'inline-block' }} >
+            <Col key={'cat' + index} className="w-[80px] mr-2 m-auto" style={{ display: 'inline-block' }} >
               <Grid sx={hover} onClick={onSelect}>
                 <Paper elevation={2} variant="outlined" className="rounded-full h-[80px] w-[80px] m-auto p-4" >
                   <img

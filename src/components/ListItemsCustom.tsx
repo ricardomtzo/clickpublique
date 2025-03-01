@@ -5,26 +5,40 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Collapse from '@mui/material/Collapse';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
 import StarBorder from '@mui/icons-material/StarBorder';
 import { useRouter } from 'next/navigation';
 
 
-export default function ListItemsCustom({items}: any) {
+export default function ListItemsCustom({items, categoryType}: any) {
     const route = useRouter();
     const [open, setOpen] = React.useState(false);
     const [itemsList, setItemsList] = React.useState(items);
 
     const handleClick = () => {
-        route.push("/cadastrar-anuncio/informacoes");
-        //setOpen(!open);
+        handleCategoryType(categoryType);
     };
 
     React.useEffect(() => {
         setItemsList(items);
     }, [items]);
+
+    const handleCategoryType = (category: string) => {
+        switch (category) {
+            case "6":
+                return route.push("/cadastrar-anuncio/veiculos");
+            case "1":
+                return route.push("/cadastrar-anuncio/imoveis");
+            case "2":
+                return route.push("/cadastrar-anuncio/produtos");
+            case "4":
+                return route.push("/cadastrar-anuncio/servicos_e_empregos");
+            case "5":
+                return route.push("/cadastrar-anuncio/servicos_e_empregos");       
+            default:
+                return route.push("/cadastrar-anuncio/veiculos");         
+        }
+    }
+
 
     return (
         <List
