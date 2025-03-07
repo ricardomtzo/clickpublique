@@ -8,18 +8,22 @@ import {
   Link,
   Radio,
   Grid2,
+  Alert,
 } from '@mui/material';
 import { Col, Row } from '@/components/Grids';
 
 import { ButtonCustom } from '@/components/ButtonCustom';
 import { useAuth } from "../hooks/AuthService";
 import UserService from '@/services/UserService';
+import { CheckCircleOutline } from '@mui/icons-material';
 
 export default function Cadastro() {
 
-  const { user ,login, register, updateUser  } = useAuth();
+  const { user, login, register, updateUser } = useAuth();
   const [typeUser, setTypeUser] = React.useState<any>('1');
   const [gender, setGender] = React.useState<any>('1');
+  const [infoUpdated, setInfoUpdated] = React.useState<any>(false);
+  const [addressUpdated, setAddressUpdated] = React.useState<any>(false);
 
   React.useEffect(() => {
     user?.id && getUser(user?.id);
@@ -27,12 +31,12 @@ export default function Cadastro() {
     setGender(user?.gender);
   }, [user?.id]);
 
-  async function getUser (id: any) {
+  async function getUser(id: any) {
     const response = await UserService.getById(id);
     console.log(response);
   }
 
-  async function handleSubmitData (e: any) {
+  async function handleSubmitData(e: any) {
     e.preventDefault()
 
     const notAllowed = ['email', 'cpf'];
@@ -40,23 +44,25 @@ export default function Cadastro() {
 
     for (let index = 0; index < e.target.length; index++) {
       if (
-        e.target[index].name 
+        e.target[index].name
         && !notAllowed.includes(e.target[index].name)
         && e.target[index].value != ""
       )
         form[e.target[index].name] = e.target[index].value;
     }
-    
+
     form['type_user'] = typeUser;
     form['gender'] = gender;
 
-    console.log('form',form);
     const response: any = await UserService.update(user?.id as string, form);
-    updateUser(response);
-    
+    updateUser({
+      ...user,
+      ...response
+    });
+    handlerInfoUpdated();
   }
 
-  const handleSubmitAddress = async(e: any) => {
+  const handleSubmitAddress = async (e: any) => {
     e.preventDefault()
 
     const form: any = {};
@@ -66,23 +72,25 @@ export default function Cadastro() {
     }
 
     form['user_id'] = user?.id;
- 
-    if(!user?.address?.id){
+
+    if (!user?.addresses[0]?.id) {
       const response = await UserService.createAddress(form);
       updateUser({
         ...user,
-        address: response
+        addresses: [response]
       })
-    }else{
-      const response = await UserService.updateAddress(user.address.id, form);
+    } else {
+      const response = await UserService.updateAddress(user.addresses[0].id, form);
       updateUser({
         ...user,
-        address: response
+        addresses: [response]
       })
     }
+
+    handlerAddressUpdated();
   }
 
-  const handleSubmitPhone = async(e: any) => {
+  /*const handleSubmitPhone = async(e: any) => {
     e.preventDefault()
 
     const form: any = {};
@@ -94,7 +102,7 @@ export default function Cadastro() {
     const response = await UserService.update(user?.address?.id as string, form);
     console.log(response);
     
-  }
+  }*/
 
   const handlerTypeUser = (e: any) => {
     setTypeUser(e.target.value);
@@ -104,8 +112,22 @@ export default function Cadastro() {
     setGender(e.target.value);
   }
 
+  const handlerInfoUpdated = () => {
+    setInfoUpdated(true);
+    setTimeout(() => {
+      setInfoUpdated(false);
+    }, 3000);
+  }
+
+  const handlerAddressUpdated = () => {
+    setAddressUpdated(true);
+    setTimeout(() => {
+      setAddressUpdated(false);
+    }, 3000);
+  }
+
   return (
-    <Col container spacing={2} style={{ maxWidth: '600px', margin: 'auto' }}>
+    <Col container spacing={2} p={2} style={{ maxWidth: '600px', margin: 'auto' }}>
 
       <Typography variant="h5" className="text-black mt-5" >
         Meu cadastro
@@ -127,7 +149,7 @@ export default function Cadastro() {
                 </Typography>
 
                 <Typography variant="body1" color="black" className="" >
-                  Pessoa jurídica <Radio name="type_user" value="PJ" checked={typeUser === 'PJ'} onChange={handlerTypeUser}  />
+                  Pessoa jurídica <Radio name="type_user" value="PJ" checked={typeUser === 'PJ'} onChange={handlerTypeUser} />
                 </Typography>
               </Row>
 
@@ -178,7 +200,7 @@ export default function Cadastro() {
                   className='mb-5'
                   helperText="Sua senha deve ter pelo menos 6 caracteres"
                 />
-                
+
                 <TextField
                   focused
                   margin="normal"
@@ -188,20 +210,20 @@ export default function Cadastro() {
                   defaultValue={user?.date_birth}
                 />
 
-              <Typography variant="body1" className="text-black mt-3" >
-                Gênero
-              </Typography>
+                <Typography variant="body1" className="text-black mt-3" >
+                  Gênero
+                </Typography>
                 <Row container spacing={2}>
                   <Typography variant="body1" color="black" className="" >
                     Feminino <Radio name="gender" value="1" checked={gender === '1'} onChange={handlerGender} />
                   </Typography>
 
                   <Typography variant="body1" color="black" className="" >
-                   Masculíno <Radio name="gender" value="2" checked={gender === '2'} onChange={handlerGender} />
+                    Masculíno <Radio name="gender" value="2" checked={gender === '2'} onChange={handlerGender} />
                   </Typography>
 
                   <Typography variant="body1" color="black" className="" >
-                   Não informar <Radio name="gender" value="3" checked={gender === '3'} onChange={handlerGender} />
+                    Não informar <Radio name="gender" value="3" checked={gender === '3'} onChange={handlerGender} />
                   </Typography>
                 </Row>
 
@@ -211,6 +233,11 @@ export default function Cadastro() {
                 >
                   Salvar alterações
                 </ButtonCustom>
+
+                {infoUpdated && <Alert className='mt-5' icon={<CheckCircleOutline fontSize="inherit" />} severity="success">
+                  Dados pessoais alterados com sucesso!
+                </Alert>}
+
               </Box>
 
             </form>
@@ -219,7 +246,10 @@ export default function Cadastro() {
         </Col>
       </Paper>
 
+
+
       <Paper elevation={2} variant="outlined" className="rounded-xl p-5 max-w-[550px] mb-5" >
+
         <Col mb={5}>
           <Box pt={3}>
 
@@ -239,18 +269,23 @@ export default function Cadastro() {
                       label={input.label}
                       name={input.name}
                       style={{ marginRight: 10 }}
-                      defaultValue={user?.address?.[input.name]}
+                      defaultValue={user?.addresses[0]?.[input.name]}
                     />
                   </Col>
                 ))}
-                
-               
+
+
                 <ButtonCustom
                   type="submit"
-                  className='mt-5'
+                  className='my-5'
                 >
                   Salvar alterações
                 </ButtonCustom>
+
+                {addressUpdated && <Alert icon={<CheckCircleOutline fontSize="inherit" />} severity="success">
+                  Endereço atualizado com sucesso!
+                </Alert>}
+
               </Grid2>
 
             </form>

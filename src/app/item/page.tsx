@@ -46,7 +46,6 @@ export default function Home() {
   const getCategory = async (data: any) => {
     try {
       const response = await categoryService.getAll();
-      console.log(data?.ad_type_type);
       setCategory(response.find((item: any) => item.type == typesCat[data?.ad_type_type]));
     } catch (error) {
       console.error(error);
@@ -138,11 +137,15 @@ export default function Home() {
             </Grid>
 
             <LineSpace margin="0" width="100px" text="Detalhes" />
+            <Typography variant="body2" className="text-grey mt-2 mb-7" color="text.secondary">
+              {ad?.ad_type?.details_immobile}
+              <br/>
+              {ad?.ad_type?.details_condominium}
+            </Typography>
 
             <LineSpace margin="0" width="120px" text="Localização" />
-
             <Typography variant="body2" className="text-grey mt-2 mb-7" color="text.secondary">
-              {ad?.ad_type?.cep}
+              {ad?.cep}
             </Typography>
           </Grid>
         </Grid>

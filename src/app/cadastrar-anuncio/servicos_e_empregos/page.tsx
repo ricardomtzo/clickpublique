@@ -22,10 +22,9 @@ export default function Home() {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState<any>({});
+  const [form, setForm] = useState<any>({ price: 0 });
 
   const setInputValue = (name: string, value: any) => {
-    console.log(name, value)
     setForm({
       ...form,
       [name]: value,
@@ -38,7 +37,7 @@ export default function Home() {
 
     const formData = new FormData();
     formData.append('user_id', user.id);
-    formData.append('category', '2');
+    formData.append('category', '4');
     
     Object.keys(form).forEach(key => {
       if (key === 'file') {
@@ -96,7 +95,7 @@ export default function Home() {
         <StteperCustom
           contents={[
             {
-              header: 'Informações do produto',
+              header: 'Informações',
               content:
                 <Col>
                     <Typography variant="h6" color="black" className=" mb-5" >Crie um título e compartilhe </Typography>
@@ -115,14 +114,20 @@ export default function Home() {
                 </Col>
             },
             {
-              header: 'Informações',
+              header: 'Área de atuação',
               content:
-                <Col>
-                  <Typography variant="h6" color="black" className=" mb-5" >Tipo de produto</Typography>
+                <Col className="w-[400px]">
+                  <Typography variant="h6" color="black" className="mb-5" >Área do Emprego ou Serviço</Typography>
                   <Row container spacing={1}>
-                    {typeProduct.map((item) => (
+                    {/*typeProduct.map((item) => (
                       <ButtonSelect key={item} selected={form?.type?.includes(item)} onClick={() => onSelectAdditionalInfo(item)}>{item}</ButtonSelect>
-                    ))}
+                    ))*/}
+                    <TextInputCustom
+                    className="w-[100%]"
+                      label={'Área de atuação'}
+                      name="type"
+                      onChange={(e) => setInputValue('type', e.target.value)}
+                    />
                   </Row>
                 </Col>
             },
@@ -137,33 +142,11 @@ export default function Home() {
                 </Col>
             },
             {
-              header: 'Valor',
-              content:
-                <Col className="max-w-[600px]">
-                  <Typography variant="h6" color="black" className=" mb-5" >Defina o valor do produto</Typography>
-
-                  <Row container>
-                    <Typography variant="h2" color="black" className="mb-5 text-[#01004c] font-[400]" >R$ </Typography>
-                    <Typography variant="h2" color="black" className="mb-5 text-[#01004c] font-[400]" > {form.price ?? '0.00'}</Typography>
-                  </Row>
-
-                  <TextInputCustom label="Valor" name="price" onChange={(e) => setInputValue('price', e.target.value)} />
-
-                  <Typography variant="body1" color="black" className="mb-5" >
-                    Aceito troca <Switch defaultChecked />
-                  </Typography>
-
-                  <LineSpace margin="0" />
-                  <Link className="text-center" href="#">Saiba mais sobre os preços</Link>
-                  <Alert className="w-[100%] my-10" severity="warning">Quando o preço está muito acima da média e dos outros anúncios, o interesse de possíveis compradores pode ser menor</Alert>
-                </Col>
-            },
-            {
               header: 'Para finalizar',
               content:
                 <Col className="max-w-[600px]">
                   <TextInputCustom
-                      label="CEP da localização do produto*"
+                      label="CEP da localização do serviço*"
                       name="cep"
                       onChange={(e) => setInputValue('cep', e.target.value)}
                     />
@@ -222,18 +205,6 @@ const inputList = [
   {
     label: 'Descrição*',
     name: 'description',
-  },
-  {
-    label: 'Condição*',
-    name: 'condition',
-  },
-  {
-    label: 'Marca*',
-    name: 'brand',
-  },
-  {
-    label: 'Cor',
-    name: 'color',
   }
 ]
 

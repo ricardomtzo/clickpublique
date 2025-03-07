@@ -11,9 +11,9 @@ interface User {
     password: string;
     type_user: string;
     gender: string;
-    address?: any;
+    addresses?: any;
     active: boolean;  
-    created_at?: string;
+    created_at?: any;
     date_birth?: string;
 }
 

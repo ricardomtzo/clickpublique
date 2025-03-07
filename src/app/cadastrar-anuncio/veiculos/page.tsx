@@ -58,6 +58,8 @@ export default function Home() {
 
     const formData = new FormData();
     formData.append('user_id', user.id);
+    formData.append('category', '6');
+
     Object.keys(form).forEach(key => {
       if (key === 'file') {
         for (let i = 0; i < form.file.length; i++) {
@@ -297,7 +299,7 @@ export default function Home() {
               type="button"
               size="small"
               className="bg-[#1df166] text-white"
-              onClick={() => router.push('./meus-anuncios')} >Ir para meus anúncios</Button>
+              onClick={() => router.push('/perfil')} >Ir para meus anúncios</Button>
           </Paper>
         </Grid2>
       </Modal>

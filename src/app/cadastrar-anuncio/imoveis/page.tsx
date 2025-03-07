@@ -1,12 +1,11 @@
 'use client'
-import React, { useState } from "react";
-import { Alert, Button, Grid2, Link, Modal, Paper, Switch, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Alert, Button, Grid2, Link, Modal, Paper, Switch, TextareaAutosize, Typography } from "@mui/material";
 import SelectSearch from "@/components/SelectSearch";
 import TextInputCustom from "@/components/TextInputCustom";
 import { Col, Row } from "@/components/Grids";
 import ButtonSelect from "@/components/ButtonSelect";
 
-import LineSpace from "@/components/LineSpace";
 import StteperCustom from "@/components/StepperCustom";
 import { environment } from "@/environments/environment";
 import { useAuth } from "@/app/hooks/AuthService";
@@ -22,10 +21,9 @@ export default function Home() {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState<any>({});
+  const [form, setForm] = useState<any>({ price: 0, details_immobile: '', details_condominium: '' });
 
   const setInputValue = (name: string, value: any) => {
-    console.log(name, value)
     setForm({
       ...form,
       [name]: value,
@@ -38,8 +36,8 @@ export default function Home() {
 
     const formData = new FormData();
     formData.append('user_id', user.id);
-    formData.append('category', '2');
-    
+    formData.append('category', '1');
+
     Object.keys(form).forEach(key => {
       if (key === 'file') {
         for (let i = 0; i < form.file.length; i++) {
@@ -69,17 +67,32 @@ export default function Home() {
 
   }
 
-  const onSelectAdditionalInfo = (value: any) => {
-    if (form?.type?.includes(value)) {
-      const newValue = form?.type.replace(value + ',', '');
+  const onSelectDetailsImmobile = (value: any) => {
+    if (form?.details_immobile?.includes(value)) {
+      const newValue = form?.details_immobile.replace(value + ',', '');
       setForm({
         ...form,
-        type: newValue
+        details_immobile: newValue
       })
     } else {
       setForm({
         ...form,
-        type: form?.type + value + ',',
+        details_immobile: form?.details_immobile + value + ',',
+      });
+    }
+  };
+
+  const onSelectDetailsCondominium = (value: any) => {
+    if (form?.details_condominium?.includes(value)) {
+      const newValue = form?.details_condominium.replace(value + ',', '');
+      setForm({
+        ...form,
+        details_condominium: newValue
+      })
+    } else {
+      setForm({
+        ...form,
+        details_condominium: form?.details_condominium + value + ',',
       });
     }
   };
@@ -96,10 +109,10 @@ export default function Home() {
         <StteperCustom
           contents={[
             {
-              header: 'Informações do produto',
+              header: 'Informações',
               content:
-                <Col>
-                    <Typography variant="h6" color="black" className=" mb-5" >Crie um título e compartilhe </Typography>
+                <Col className="max-w-[600px]">
+                  <Typography variant="h6" color="black" className="mb-5" >Crie um título e compartilhe </Typography>
                   <Alert className="w-[100%] mb-10" severity="info">Anúncios mais completos vendem mais rápido.
                   </Alert>
 
@@ -108,6 +121,10 @@ export default function Home() {
                       key={'obrig' + index}
                       label={input.label}
                       name={input.name}
+                      type={input?.type ?? "text"}
+                      multiline={input?.type === 'textarea'} 
+                      rows={4}
+                      fullWidth
                       onChange={(e) => setInputValue(input.name, e.target.value)}
                     />
                   ))}
@@ -115,13 +132,20 @@ export default function Home() {
                 </Col>
             },
             {
-              header: 'Informações',
+              header: 'Detalhes do Imóvel e do Condomínio',
               content:
-                <Col>
-                  <Typography variant="h6" color="black" className=" mb-5" >Tipo de produto</Typography>
+                <Col className="max-w-[600px]">
+                  <Typography variant="h6" color="black" className="mt-5 mb-2" >Detalhes do Imóvel</Typography>
                   <Row container spacing={1}>
-                    {typeProduct.map((item) => (
-                      <ButtonSelect key={item} selected={form?.type?.includes(item)} onClick={() => onSelectAdditionalInfo(item)}>{item}</ButtonSelect>
+                    {detailsImmobile.map((item) => (
+                      <ButtonSelect key={item} selected={form?.details_immobile?.includes(item)} onClick={() => onSelectDetailsImmobile(item)}>{item}</ButtonSelect>
+                    ))}
+                  </Row>
+
+                  <Typography variant="h6" color="black" className="mt-5 mb-2" >Detalhes do Condomínio</Typography>
+                  <Row container spacing={1}>
+                    {detailCondominium.map((item) => (
+                      <ButtonSelect key={item} selected={form?.details_condominium?.includes(item)} onClick={() => onSelectDetailsCondominium(item)}>{item}</ButtonSelect>
                     ))}
                   </Row>
                 </Col>
@@ -137,36 +161,14 @@ export default function Home() {
                 </Col>
             },
             {
-              header: 'Valor',
-              content:
-                <Col className="max-w-[600px]">
-                  <Typography variant="h6" color="black" className=" mb-5" >Defina o valor do produto</Typography>
-
-                  <Row container>
-                    <Typography variant="h2" color="black" className="mb-5 text-[#01004c] font-[400]" >R$ </Typography>
-                    <Typography variant="h2" color="black" className="mb-5 text-[#01004c] font-[400]" > {form.price ?? '0.00'}</Typography>
-                  </Row>
-
-                  <TextInputCustom label="Valor" name="price" onChange={(e) => setInputValue('price', e.target.value)} />
-
-                  <Typography variant="body1" color="black" className="mb-5" >
-                    Aceito troca <Switch defaultChecked />
-                  </Typography>
-
-                  <LineSpace margin="0" />
-                  <Link className="text-center" href="#">Saiba mais sobre os preços</Link>
-                  <Alert className="w-[100%] my-10" severity="warning">Quando o preço está muito acima da média e dos outros anúncios, o interesse de possíveis compradores pode ser menor</Alert>
-                </Col>
-            },
-            {
               header: 'Para finalizar',
               content:
                 <Col className="max-w-[600px]">
                   <TextInputCustom
-                      label="CEP da localização do produto*"
-                      name="cep"
-                      onChange={(e) => setInputValue('cep', e.target.value)}
-                    />
+                    label="CEP da localização do imóvel*"
+                    name="cep"
+                    onChange={(e) => setInputValue('cep', e.target.value)}
+                  />
                   <Row container className="mt-5 justify-between align-center">
                     <Typography variant="body1" color="black" className="mb-5 pt-2" >
                       Contato: {user?.phone}
@@ -222,25 +224,63 @@ const inputList = [
   {
     label: 'Descrição*',
     name: 'description',
+    type: 'textarea',
   },
   {
-    label: 'Condição*',
-    name: 'condition',
+    label: 'Tipo*',
+    name: 'type',
   },
   {
-    label: 'Marca*',
-    name: 'brand',
+    label: 'Quer vender ou alugar?*',
+    name: 'sell_or_rent',
   },
   {
-    label: 'Cor',
-    name: 'color',
+    label: 'Quantidade de quartos*',
+    name: 'number_rooms',
+    type: 'number',
+  },
+  {
+    label: 'Quantidade de banheiros*',
+    name: 'number_bathrooms',
+    type: 'number',
+  },
+  {
+    label: 'Tamanho*',
+    name: 'size',
+    type: 'number',
+  },
+  {
+    label: 'Quantidade de vagas de estacionamento*',
+    name: 'parking_spaces',
+    type: 'number',
+  },
+  {
+    label: 'Valor condominio*',
+    name: 'value_condominium',
+  },
+  {
+    label: 'Valor IPTU*',
+    name: 'value_iptu',
   }
 ]
 
-const typeProduct = [
-  "Eletrônico",
-  "Para casa",
-  "Moda",
-  "Movel",
-  "Outros"
+const detailsImmobile = [
+  "Área de serviço",
+  "Armários na cozinha",
+  "Armários no quarto",
+  "Mobiliado",
+  "Ar condicionado",
+  "Churrasqueira",
+  "Varanda",
+  "Quarto de serviço",
 ];
+
+const detailCondominium = [
+  "Condomínio fechado",
+  "Segurança 24h",
+  "Área murada",
+  "Permitido animais",
+  "Portão eletrônico",
+  "Academia",
+  "Piscina",
+]

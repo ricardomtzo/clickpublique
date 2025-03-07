@@ -12,7 +12,7 @@ export default function StteperCustom({ contents }: any) {
     const stepperRef = useRef<any>(null);
 
     return (
-        <Col sx={{ width: '100%' }}>
+        <Col sx={{ width: isMobile() ? window.innerWidth - 50 : '100%'}}>
             <Stepper ref={stepperRef} orientation={isMobile() ? 'horizontal' : 'vertical'}>
 
                 {contents?.map((item: any, index: number) => (

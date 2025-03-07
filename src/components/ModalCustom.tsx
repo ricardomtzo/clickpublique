@@ -18,8 +18,6 @@ export default function ModalCustom({ open, selected, onClose }: any) {
 
     };*/
 
-    console.log(selected);
-
     const items = selected?.children.map((item: any) => item.name);
     return (
         <React.Fragment>
