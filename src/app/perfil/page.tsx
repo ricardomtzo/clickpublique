@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState } from "react";
 import { alpha, Avatar, InputAdornment, InputBase, Paper, styled, Typography } from "@mui/material";
-import { Col, Row } from "@/components/Grids";
+import { Col, Row, RowScroll } from "@/components/Grids";
 import { CalendarTodayOutlined, CheckOutlined, Filter, LocationOnOutlined, ShareOutlined, Shop2Sharp } from "@mui/icons-material";
 import LineSpace from "@/components/LineSpace";
 import TextIcon from "@/components/TextIcon";
@@ -13,25 +13,40 @@ import ProductsList from "@/components/Products";
 import { useAuth } from "../hooks/AuthService";
 import AdsService from "@/services/AdsService";
 import CategorieService from "@/services/CategorieService";
+import { useSearchParams } from "next/navigation";
+import UserService from "@/services/UserService";
+import SingleAd from "@/components/SingleAd";
 
 
 export default function Home() {
 
-  const { user } = useAuth();
+  const { user: userLogged } = useAuth();
+  const searchParams = useSearchParams();
+  const idUser = searchParams.get("u") || userLogged?.id;
 
   const [ads, setAds] = useState<any>([]);
+  const [user, setUser] = useState<any>(null);
   const [categories, setCategories] = useState<any>([]);
 
   useEffect(() => {
+    getUser();
     getAds();
     getCategories();
-  },[]);
+  }, [idUser]);
+
+  const getUser = async () => {
+    if (!idUser) return
+    const response = await UserService.getById(idUser);
+    setUser(response);
+  }
 
   const getAds = async () => {
+    console.log(idUser)
+    if (!idUser) return
     try {
-      const response = await AdsService.getAll();
-      console.log(response);
+      const response = await AdsService.getByUserId(idUser);
       setAds(response);
+      console.log({ response });
     } catch (error) {
       console.error(error);
     }
@@ -48,7 +63,7 @@ export default function Home() {
 
 
   return (
-    <Row container spacing={2} className="p-5" >
+    <Row container spacing={2} className="p-2 mt-5" >
       <Col size={{ xs: 12, sm: 12, md: 4, lg: 4 }} >
         <Paper variant="outlined" className="rounded-xl p-8" >
           <Row container spacing={2}>
@@ -132,9 +147,13 @@ export default function Home() {
           <Col><SelectSearch placeholder="Ordenar por" /></Col>
         </Row>
 
-          <Paper variant="outlined" className="rounded-xl p-5 mt-5" >
-            <ProductsList ads={ads} />
-          </Paper>
+        <Paper variant="outlined" className="rounded-xl p-5 mt-5 mb-10" >
+          <RowScroll className="py-5 px-1">
+            {ads.map((ad: any, idx: number) => (
+              idx < 10 && <Col key={'ad2' + idx} className="w-[230px] mr-2" style={{ display: 'inline-block' }} ><SingleAd key={'ad' + idx} ad={ad} /></Col>
+            ))}
+          </RowScroll>
+        </Paper>
       </Col>
 
 

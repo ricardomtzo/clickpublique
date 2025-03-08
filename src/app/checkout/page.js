@@ -6,6 +6,7 @@ import Resumo from "@/components/Resumo";
 import StepperCustom from "@/components/Stepper";
 import boleto from "../assets/imgs/boleto.png";
 import caixa from "../assets/imgs/caixa.png";
+import { useRouter } from "next/navigation";
 
 const style = {
   p: 0,
@@ -18,6 +19,7 @@ const style = {
 
 export default function Home() {
 
+  const route = useRouter();
   const [checked, setChecked] = useState('credit');
 
   const handleSelected = (event) => {
@@ -27,13 +29,13 @@ export default function Home() {
   const handleNextPage = () => {
 
     if (checked === 'credit') {
-      window.location.href = '/checkout/creditcardpayment';
+      route.push('/checkout/creditcardpayment');
     } else if (checked === 'debit') {
-      window.location.href = '/checkout/creditcardpayment';
+      route.push('/checkout/creditcardpayment');
     } else if (checked === 'pix') {
-      window.location.href = '/checkout/pixpayment';
+      route.push('/checkout/pixpayment');
     } else if (checked === 'boleto') {
-      window.location.href = '/checkout/boletopayment';
+      route.push('/checkout/boletopayment');
     }
   }
 

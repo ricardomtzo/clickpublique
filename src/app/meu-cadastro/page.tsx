@@ -26,14 +26,14 @@ export default function Cadastro() {
   const [addressUpdated, setAddressUpdated] = React.useState<any>(false);
 
   React.useEffect(() => {
-    user?.id && getUser(user?.id);
+    getUser(user?.id);
     setTypeUser(user?.type_user);
     setGender(user?.gender);
   }, [user?.id]);
 
   async function getUser(id: any) {
+    if(!id) return
     const response = await UserService.getById(id);
-    console.log(response);
   }
 
   async function handleSubmitData(e: any) {

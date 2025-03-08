@@ -1,1 +1,8 @@
-export const isMobile = () => window.innerWidth < 600
+export const isMobile = () => {
+    if (typeof window !== "undefined") {
+        // Código que usa window
+        return window.innerWidth < 600
+    } else {
+        return false
+    }
+}

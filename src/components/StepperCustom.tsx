@@ -11,8 +11,16 @@ import { isMobile } from "@/config/utils";
 export default function StteperCustom({ contents }: any) {
     const stepperRef = useRef<any>(null);
 
+    const windowWidth = () => {
+        if (typeof window !== "undefined") {
+            return window.innerWidth;
+        }else{
+            return 0
+        }
+    }
+    
     return (
-        <Col sx={{ width: isMobile() ? window.innerWidth - 50 : '100%'}}>
+        <Col sx={{ width: isMobile() ? windowWidth() - 50 : '100%'}}>
             <Stepper ref={stepperRef} orientation={isMobile() ? 'horizontal' : 'vertical'}>
 
                 {contents?.map((item: any, index: number) => (

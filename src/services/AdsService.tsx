@@ -18,6 +18,11 @@ class AdsService {
     return response.data;
   }
 
+  async getByUserId(id: string): Promise<Ad> {
+    const response = await api.get<Ad>(`/ads/user/${id}`);
+    return response.data;
+  }
+
   async getById(id: string): Promise<Ad> {
     const response = await api.get<Ad>(`/ads/${id}`);
     return response.data;

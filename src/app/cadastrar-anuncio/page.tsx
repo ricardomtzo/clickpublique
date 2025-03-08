@@ -4,9 +4,10 @@ import { Grid2, Typography } from "@mui/material";
 import CardOption from "@/components/CardOption";
 import ModalCustom from "@/components/ModalCustom";
 import { useRouter } from "next/navigation";
+import { environment } from "@/environments/environment";
 
-const urlBase = 'http://localhost:8000';
-
+const urlBase = environment.apiUrl;
+const urlStorage = environment.storageUrl;
 export default function Home() {
 
   const route = useRouter();
@@ -20,7 +21,7 @@ export default function Home() {
 
   function getCategories() {
 
-    fetch(urlBase + '/api/categories')
+    fetch(urlBase + '/categories')
       .then(response => response.json())
       .then(data => {
         console.log(data);
@@ -39,7 +40,7 @@ export default function Home() {
   }
 
   const Items = ({ categorie }: any) => {
-    const image = urlBase + '/storage/' + categorie?.files?.[0].path;
+    const image = urlStorage + '/' + categorie?.files?.[0].path;
     return (
       <Grid2 justifyItems="center">
         <CardOption img={image} label={categorie.name} onClick={() => handlerClickCard(categorie)} />

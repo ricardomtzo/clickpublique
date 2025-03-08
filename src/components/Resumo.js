@@ -20,14 +20,22 @@ export default function Resumo() {
         setShow(!show);
     };
 
+    const windowWidth = () => {
+        if (typeof window !== "undefined") {
+            return window.innerWidth;
+        }else{
+            return 0
+        }
+    }
+
     useEffect(() => {
         // Handler para atualizar o estado com o tamanho da tela
         const handleResize = () => {
 
-            setShow(window.innerWidth > 600);
+            setShow(windowWidth() > 600);
 
             setWindowSize({
-                width: window.innerWidth,
+                width: windowWidth(),
                 height: window.innerHeight,
             });
         };

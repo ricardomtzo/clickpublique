@@ -19,6 +19,7 @@ import { AddCircleOutlineOutlined, HomeOutlined, MenuOutlined, PermIdentityOutli
 import { useAuth } from '@/app/hooks/AuthService';
 import { useRouter } from 'next/navigation';
 import { Col, Row } from './Grids';
+import { isMobile as isMobileConf } from '@/config/utils';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -64,8 +65,7 @@ export default function Navbar() {
 
     const route = useRouter();
     const { user } = useAuth();
-
-    const [isMobile, setIsMobile] = React.useState(window.innerWidth < 600);
+    const [isMobile, setIsMobile] = React.useState(isMobileConf());
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
         React.useState<null | HTMLElement>(null);

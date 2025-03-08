@@ -10,15 +10,12 @@ import "../globals.css";
 import Navbar from "@/components/Navbar";
 import { Box, Container, CssBaseline, Typography } from "@mui/material";
 import Link from "next/link";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Click e Publique",
   description: "Tela de anúncios",
 };
-
-export async function generateStaticParams() {
-  
-}
 
 export default function RootLayout({
   children,
@@ -34,7 +31,9 @@ export default function RootLayout({
         <CssBaseline />
         <Navbar />
         <Container style={{ padding: '20px' }}>
+          <Suspense fallback={<div>Loading...</div>}>
           {children}
+          </Suspense>
         </Container>
 
         <footer style={{ backgroundColor: '#f5f5f5', padding: '20px', width: '100%', }}>

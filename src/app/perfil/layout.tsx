@@ -7,6 +7,7 @@ import localFont from "next/font/local";
 import "../globals.css";
 import { Container, CssBaseline } from '@mui/material';
 import Navbar from '@/components/Navbar';
+import { Suspense } from 'react';
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -24,19 +25,21 @@ export const metadata = {
   description: "",
 };
 
-export default function RootLayout({ children }: 
+export default function RootLayout({ children }:
   Readonly<{
-  children: React.ReactNode;
-}>) {
+    children: React.ReactNode;
+  }>) {
   return (
-      <div
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#ffff]`}
-      >
-        <Navbar />
-        <Container className='m-0 p-0 max-w-[100%] bg-[#ffff]'>
+    <div
+      className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#ffff]`}
+    >
+      <Navbar />
+      <Container className='m-0 p-0 max-w-[100%] bg-[#ffff]'>
         <CssBaseline />
+        <Suspense fallback={<div>Loading...</div>}>
           {children}
-        </Container>
-      </div>
+        </Suspense>
+      </Container>
+    </div>
   );
 }

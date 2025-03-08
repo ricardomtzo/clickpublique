@@ -8,6 +8,7 @@ import { environment } from "@/environments/environment";
 import adsService from "@/services/AdsService";
 import categoryService from "@/services/CategorieService";
 import { Col, Row, RowScroll } from "@/components/Grids";
+import { useRouter } from "next/navigation";
 
 const hover = {
   cursor: 'pointer',
@@ -19,12 +20,9 @@ const hover = {
   }
 }
 
-const onSelect = () => {
-  window.location.href = `/pesquisa`
-}
-
 export default function Home() {
 
+  const route = useRouter();
   const [categories, setCategories] = useState<any>([]);
   const [ads, setAds] = useState<any>([]);
 
@@ -51,6 +49,10 @@ export default function Home() {
     } catch (error) {
       console.error(error);
     }
+  }
+
+  const onSelect = () => {
+    route.push(`/pesquisa`);
   }
 
   return (

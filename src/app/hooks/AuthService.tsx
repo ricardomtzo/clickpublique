@@ -1,6 +1,9 @@
 'use client'
+import { environment } from "@/environments/environment";
+import { useRouter } from "next/navigation";
 import { createContext, useContext, useReducer, useEffect, ReactNode } from "react";
 
+const apiUrl = environment.apiUrl;
 // Definição dos tipos
 interface User {
     id?: string;
@@ -76,8 +79,9 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Provider do contexto
 export const AuthProvider = ({ children }: AuthProviderProps) => {
+  const route = useRouter();
   const [state, dispatch] = useReducer(authReducer, initialState);
-
+  
   // Efeito para carregar o usuário do localStorage
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -93,7 +97,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   // Função de login
   const register = (user: Partial<User>, token: string) => {
 
-    fetch('http://localhost:8000/api/register', {
+    fetch(apiUrl + '/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -107,7 +111,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             localStorage.setItem("token", token);
             dispatch({ type: "LOGIN", payload: { user: data, token } });
             
-            window.location.href = '/home';
+            route.push('/home');
           }else {
             alert(data);
           }
@@ -120,7 +124,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const login = (email: string, password: string) => {
 
-    fetch('http://localhost:8000/api/login', {
+    fetch(apiUrl + '/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -134,7 +138,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             localStorage.setItem("token", '123');
             dispatch({ type: "LOGIN", payload: { user: data, token: '123' } });
 
-            window.location.href = '/home';
+            route.push('/home');
           }else {
             alert(data);
           }

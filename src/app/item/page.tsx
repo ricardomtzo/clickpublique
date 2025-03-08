@@ -5,7 +5,7 @@ import { EmailOutlined, FacebookOutlined, FavoriteBorder, Flag, PhoneAndroid, Se
 import Gallerie from "@/components/Galleria";
 import LineSpace from "@/components/LineSpace";
 import ProductsList from "@/components/Products";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import adsService from "@/services/AdsService";
 import categoryService from "@/services/CategorieService";
 import { Col, RowScroll } from "@/components/Grids";
@@ -17,6 +17,7 @@ const typesCat: any = {
 
 export default function Home() {
 
+  const route = useRouter();
   const searchParams = useSearchParams();
   const idAd = searchParams.get("ad") || '';
 
@@ -79,6 +80,10 @@ export default function Home() {
       {category?.name}
     </Typography>,
   ];
+
+  const handlerOpenProfile = (userId: string) => {
+    route.push(`/perfil?u=${userId}`);
+  }
 
   return (
     <div>
@@ -174,7 +179,7 @@ export default function Home() {
                 Verificado com: <PhoneAndroid fontSize="small" /> <FacebookOutlined /> <EmailOutlined />
               </Typography>
 
-              <Link className="text-[14px] text-center" underline="hover" key="1" href="/" >
+              <Link className="text-[14px] text-center" underline="hover" key="1" onClick={() => handlerOpenProfile(ad?.user?.id)} >
                 Ver todos os anúncios
               </Link>
             </Box>

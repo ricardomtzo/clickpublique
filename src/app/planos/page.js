@@ -4,6 +4,7 @@ import { Box, Button, Grid2, Paper, Switch, Typography } from "@mui/material";
 import { ArrowForwardOutlined, CheckOutlined, ChevronLeft, ChevronRight } from "@mui/icons-material";
 import { styled } from '@mui/material/styles';
 import PlansService from "@/services/PlansService";
+import { useRouter } from "next/navigation";
 
 
 const Android12Switch = styled(Switch)(({ theme }) => ({
@@ -70,6 +71,7 @@ const planos = [
 
 export default function Cardpayment() {
 
+  const route = useRouter();
   const [plans, setPlans] = useState([]);
   const planosInicMobile = planos.filter((item, i) => i === 0);
 
@@ -110,7 +112,7 @@ export default function Cardpayment() {
   }
 
   const handleNextPage = () => {
-    window.location.href = '/checkout';
+    route.push('/checkout');
   }
 
   return (
