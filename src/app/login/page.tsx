@@ -97,7 +97,7 @@ export default function Login() {
                 </Box>
               </Col>
 
-              <Col container spacing={2} mb={3} justifyContent={'center'} alignItems={'center'} >
+              {/*<Col container spacing={2} mb={3} justifyContent={'center'} alignItems={'center'} >
                 <ButtonCustom variant='outlined' style={{ backgroundColor: '#fff' }}>
                   <GoogleIcon fontSize='large' sx={{ color: '#000', mr: 1 }} /> Conta Google
                 </ButtonCustom>
@@ -106,7 +106,7 @@ export default function Login() {
                   <Facebook fontSize='large' sx={{ color: '#000', mr: 1 }} /> Conta do Facebook
                 </ButtonCustom>
 
-              </Col>
+              </Col>*/}
 
               <LineSpace />
 

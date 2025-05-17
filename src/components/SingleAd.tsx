@@ -2,6 +2,8 @@ import { environment } from "@/environments/environment";
 import { Box, Grid2 as Grid, Paper, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Col } from "./Grids";
+import { DeleteOutline } from "@mui/icons-material";
 
 const hover = {
     cursor: 'pointer',
@@ -10,7 +12,7 @@ const hover = {
     'box-shadow': '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'
 }
 
-export default function SingleAd({ ad }: any) {
+export default function SingleAd({ ad, onDelete }: any) {
 
     const route = useRouter();
     const [isHovered, setIsHovered] = useState(false);
@@ -28,17 +30,22 @@ export default function SingleAd({ ad }: any) {
             onMouseLeave={() => setIsHovered(false)}
             onClick={onSelect}>
             <Paper elevation={2} variant="outlined" className="rounded-xl h-[250px] w-[220px] m-auto" style={isHovered ? hover : {}} >
-                <img
-                    src={img}
-                    alt="Logo"
-                    width={'100%'}
-                    height={150}
-                    style={{ maxHeight: 150, minHeight: 150, objectFit: 'cover', borderRadius: 10, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }} />
+                <Col style={{
+                    backgroundImage: `url(${img})`,
+                    backgroundSize: 'cover',
+                    height: '150px',
+                    width: '100%',
+                    borderRadius: 10,
+                    borderBottomLeftRadius: 0,
+                    borderBottomRightRadius: 0
+                }}>
+                    {onDelete && <DeleteOutline className="text-red bg-white p-1 rounded mt-2 ml-2" onClick={(e) => { e.stopPropagation(); onDelete(ad?.id) }} />}
 
-                <Box className="p-2">
+                </Col>
+                <Box className="p-2 overflow-hidden mr-3">
                     <Typography className="text-black mb-2">R$ {ad?.price}</Typography>
                     <Typography className="text-black">{ad?.title}</Typography>
-                    <Typography variant="body2" className="text-grey" color="text.secondary">{ad?.description}</Typography>
+                    <Typography variant="body2" className="text-grey " color="text.secondary">{ad?.description}</Typography>
                 </Box>
             </Paper>
         </Grid>

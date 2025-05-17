@@ -16,6 +16,7 @@ import CategorieService from "@/services/CategorieService";
 import { useSearchParams } from "next/navigation";
 import UserService from "@/services/UserService";
 import SingleAd from "@/components/SingleAd";
+import AlertDialog from "@/components/AlertDialog";
 
 
 export default function Home() {
@@ -27,6 +28,8 @@ export default function Home() {
   const [ads, setAds] = useState<any>([]);
   const [user, setUser] = useState<any>(null);
   const [categories, setCategories] = useState<any>([]);
+  const [open, setOpen] = useState(false);
+  const [adToDelete, setAdToDelete] = useState<any>(null);
 
   useEffect(() => {
     getUser();
@@ -37,16 +40,15 @@ export default function Home() {
   const getUser = async () => {
     if (!idUser) return
     const response = await UserService.getById(idUser);
+    console.log(response);
     setUser(response);
   }
 
   const getAds = async () => {
-    console.log(idUser)
     if (!idUser) return
     try {
       const response = await AdsService.getByUserId(idUser);
       setAds(response);
-      console.log({ response });
     } catch (error) {
       console.error(error);
     }
@@ -61,6 +63,17 @@ export default function Home() {
     }
   }
 
+  const deleteAd = async (id: any) => {
+      const response = await AdsService.delete(id);
+      console.log(response);
+      getAds();
+  }
+
+  const handlerOnClose = (choose: boolean) => {
+    if(choose) { deleteAd(adToDelete); } 
+    setOpen(false); 
+    setAdToDelete('');
+  }
 
   return (
     <Row container spacing={2} className="p-2 mt-5" >
@@ -83,10 +96,10 @@ export default function Home() {
               text={`Na Click e Publique desde ${new Date(user?.created_at).toLocaleDateString()}`}
               icon={<CalendarTodayOutlined className="text-[18px] mr-2" />}
             />
-            <TextIcon
+            {user?.addresses[0] && <TextIcon
               text={`${user?.addresses[0]?.street}, ${user?.addresses[0]?.number} - ${user?.addresses[0]?.district}, ${user?.addresses[0]?.city} - ${user?.addresses[0]?.state}`}
               icon={<LocationOnOutlined className="text-[18px] mr-2" />}
-            />
+            />}
 
             <LineSpace width={'100%'} />
 
@@ -150,13 +163,24 @@ export default function Home() {
         <Paper variant="outlined" className="rounded-xl p-5 mt-5 mb-10" >
           <RowScroll className="py-5 px-1">
             {ads.map((ad: any, idx: number) => (
-              idx < 10 && <Col key={'ad2' + idx} className="w-[230px] mr-2" style={{ display: 'inline-block' }} ><SingleAd key={'ad' + idx} ad={ad} /></Col>
+              idx < 10 &&
+              <Col
+                key={'ad2' + idx}
+                className="w-[230px] mr-2"
+                style={{ display: 'inline-block' }} >
+                <SingleAd key={'ad' + idx} ad={ad} showDeleteBtn={idUser == userLogged?.id} onDelete={() => { setOpen(true); setAdToDelete(ad.id) }} />
+              </Col>
             ))}
           </RowScroll>
         </Paper>
       </Col>
 
-
+      <AlertDialog
+        open={open}
+        onClose={handlerOnClose}
+        title="Excluir anuncio"
+        content="Tem certeza que deseja excluir o anuncio?"
+      />
     </Row>
   );
 }
