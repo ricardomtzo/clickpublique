@@ -178,7 +178,7 @@ export default function Navbar() {
                     Anunciar
                 </Button>
 
-                <Search className='w-[50%]'>
+                <Search className='w-[35%]'>
                     <SearchIconWrapper>
                         <SearchIcon />
                     </SearchIconWrapper>
@@ -189,8 +189,7 @@ export default function Navbar() {
 
                 </Search>
                 <Button onClick={() => handleNavigation('/pesquisa')} variant="outlined" size='small' className='text-[#fff] border-[#fff] mr-5 pt-1'>Buscar</Button>
-
-                <Box sx={{ flexGrow: 1 }} />
+     
                 <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                     {/*<IconButton size="large" aria-label="show 4 new mails" color="inherit">
                             <DashboardOutlined />
@@ -226,7 +225,7 @@ export default function Navbar() {
                 </Box>
                 <Button
                     variant='contained'
-                    className='rounded-full ml-5 px-5'
+                    className='rounded-full ml-3 px-5'
                     style={{ backgroundColor: '#12d658', color: '#fff' }}
                     onClick={() => handleNavigation('/planos')}>
                     Planos

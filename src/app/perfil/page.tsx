@@ -13,7 +13,7 @@ import ProductsList from "@/components/Products";
 import { useAuth } from "../hooks/AuthService";
 import AdsService from "@/services/AdsService";
 import CategorieService from "@/services/CategorieService";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import UserService from "@/services/UserService";
 import SingleAd from "@/components/SingleAd";
 import AlertDialog from "@/components/AlertDialog";
@@ -23,6 +23,7 @@ export default function Home() {
 
   const { user: userLogged } = useAuth();
   const searchParams = useSearchParams();
+  const navigate = useRouter();
   const idUser = searchParams.get("u") || userLogged?.id;
 
   const [ads, setAds] = useState<any>([]);
@@ -40,7 +41,6 @@ export default function Home() {
   const getUser = async () => {
     if (!idUser) return
     const response = await UserService.getById(idUser);
-    console.log(response);
     setUser(response);
   }
 
@@ -87,7 +87,7 @@ export default function Home() {
             />
             <Col>
               <Typography variant="body1" className="text-black mt-3" > {user?.name} </Typography>
-              <Typography className="text-black text-sm" > online</Typography>
+              <Typography className="text-black text-sm" ></Typography>
             </Col>
           </Row>
 
@@ -112,10 +112,10 @@ export default function Home() {
               text="Número de telefone"
               icon={<CheckOutlined className="text-[18px] mr-2" />}
             />
-            <TextIcon
+            {/*<TextIcon
               text="Conta do Facebook"
               icon={<CheckOutlined className="text-[18px] mr-2" />}
-            />
+            />*/}
 
             <LineSpace width={'100%'} />
 
@@ -123,6 +123,7 @@ export default function Home() {
               variant="contained"
               className="mb-5"
               startIcon={<Shop2Sharp />}
+              onClick={() => navigate.push('/planos')}
             >Quero uma loja profissional</ButtonCustom>
 
             <TextIcon
@@ -139,7 +140,7 @@ export default function Home() {
 
           <Filter className="text-[25px] mb-2" />
           <Typography variant="body1" className="text-black" >{ads.length} anúncios</Typography>
-          <Typography variant="body1" className="text-black text-sm" >Publicados nos últimos 180 dias</Typography>
+          <Typography variant="body1" className="text-black text-sm" >Publicados nos últimos dias</Typography>
         </Paper>
 
         <Typography variant="body1" className="text-black mb-1" >Anúncios do vendedor</Typography>

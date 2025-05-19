@@ -27,10 +27,10 @@ export default function RootLayout({
     <StyledEngineProvider injectFirst>
 
       <ThemeProvider theme={theme}>
-        <div>
+        <div className='bg-white'>
           <CssBaseline />
           <Navbar />
-          <Container style={{ padding: '20px' }}>
+          <Container style={{ padding: '20px'}}>
             {children}
           </Container>
 
