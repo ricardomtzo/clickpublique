@@ -29,11 +29,11 @@ export default function SingleAd({ ad, onDelete }: any) {
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             onClick={onSelect}>
-            <Paper elevation={2} variant="outlined" className="rounded-xl h-[250px] w-[220px] m-auto" style={isHovered ? hover : {}} >
+            <Paper elevation={2} variant="outlined" className="rounded-xl h-[300px] w-[235px] m-auto" style={isHovered ? hover : {}} >
                 <Col style={{
                     backgroundImage: `url(${img})`,
                     backgroundSize: 'cover',
-                    height: '150px',
+                    height: '200px',
                     width: '100%',
                     borderRadius: 10,
                     borderBottomLeftRadius: 0,
@@ -43,7 +43,7 @@ export default function SingleAd({ ad, onDelete }: any) {
 
                 </Col>
                 <Box className="p-2 overflow-hidden mr-3">
-                    <Typography className="text-black mb-2">R$ {ad?.price}</Typography>
+                    <Typography className="text-black mb-2 text-[20px] font-semibold">R$ {ad?.price}</Typography>
                     <Typography className="text-black">{ad?.title}</Typography>
                     <Typography variant="body2" className="text-grey " color="text.secondary">{ad?.description}</Typography>
                 </Box>

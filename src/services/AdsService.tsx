@@ -13,8 +13,8 @@ interface Ad {
 }
 
 class AdsService {
-  async getAll(): Promise<Ad[]> {
-    const response = await api.get<Ad[]>("/ads");
+  async getAll(params?: any): Promise<Ad[]> {
+    const response = await api.get<Ad[]>("/ads", { params });
     return response.data;
   }
 

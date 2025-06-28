@@ -16,10 +16,12 @@
     "@mui/material": "^6.1.7",
     "@mui/styled-engine-sc": "^6.1.7",
     "axios": "^1.7.9",
+    "googleapis": "^150.0.1",
     "next": "14.2.15",
     "primereact": "^10.8.4",
     "react": "^18",
     "react-dom": "^18",
+    "react-player": "^3.0.0",
     "styled-components": "^6.1.13"
   },
   "devDependencies": {

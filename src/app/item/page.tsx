@@ -10,6 +10,7 @@ import adsService from "@/services/AdsService";
 import categoryService from "@/services/CategorieService";
 import { Col, RowScroll } from "@/components/Grids";
 import SingleAd from "@/components/SingleAd";
+import ButtonSelect from "@/components/ButtonSelect";
 
 const typesCat: any = {
   'App\\Models\\CarAd': '6'
@@ -62,6 +63,14 @@ export default function Home() {
     }
   }
 
+  const negotiationButton = () => {
+    if(!ad?.user?.phone) return
+
+    if(typeof window !== "undefined"){
+      window.open(`https://wa.me/${ad?.user?.phone}?text=Olá, gostaria de negociar o anuncio ${ad?.title}`, '_blank');
+    }
+  }
+
   const breadcrumbs = [
     <Link className="text-[14px]" underline="hover" key="1" color="inherit" href="/" >
       Bahia
@@ -85,6 +94,25 @@ export default function Home() {
     route.push(`/perfil?u=${userId}`);
   }
 
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: ad?.title,
+          text: 'Olha esse anuncio que eu achei no Click&Publique',
+          url: 'https://clickepublique.com/item?ad=' + idAd,
+        });
+
+        // Adicionar pontuação ao usuário
+        console.log('Compartilhado com sucesso');
+      } catch (error) {
+        console.error('Erro ao compartilhar:', error);
+      }
+    } else {
+      alert('Compartilhamento não suportado neste dispositivo');
+    }
+  }
+
   return (
     <div>
       <Grid
@@ -94,9 +122,9 @@ export default function Home() {
       >
 
         <Grid size={{ xs: 12, md: 8 }}>
-          <Breadcrumbs separator="›" aria-label="breadcrumb">
+          {/*<Breadcrumbs separator="›" aria-label="breadcrumb">
             {breadcrumbs}
-          </Breadcrumbs>
+          </Breadcrumbs>*/}
 
           <Typography variant="h5" className="text-black mt-5">{ad?.title}</Typography>
 
@@ -113,20 +141,21 @@ export default function Home() {
             </Typography>
 
             <Grid container spacing={2}>
-              <Button
+              {/*<Button
 
                 variant="outlined"
                 startIcon={<FavoriteBorder />}
                 className="mb-5 rounded-full"
               >
                 Favoritar
-              </Button>
+              </Button>*/}
 
               <Button
 
                 variant="outlined"
                 startIcon={<Share />}
                 className="mb-5 rounded-full"
+                onClick={handleShare}
               >
                 Compartilhar
               </Button>
@@ -142,10 +171,14 @@ export default function Home() {
             </Grid>
 
             <LineSpace margin="0" width="100px" text="Detalhes" />
+            <br/>
             <Typography variant="body2" className="text-grey mt-2 mb-7" color="text.secondary">
-              {ad?.ad_type?.details_immobile}
+   
+              {ad?.ad_type?.details_immobile && ad.ad_type.details_immobile.split(',').map((item: string) => item &&<ButtonSelect className="mr-2" key={item} selected={false} >{item}</ButtonSelect>)}
               <br/>
-              {ad?.ad_type?.details_condominium}
+              <br/>
+              {ad?.ad_type?.details_condominium && ad.ad_type.details_condominium.split(',').map((item: string) => item &&<ButtonSelect className="mr-2" key={item} selected={false} >{item}</ButtonSelect>)}
+
             </Typography>
 
             <LineSpace margin="0" width="120px" text="Localização" />
@@ -165,7 +198,11 @@ export default function Home() {
                 {ad?.user?.name}
               </Typography>
 
-              <Button className="text-grey mt-2 text-[#5fd946] border-[#5fd946]" variant="outlined" endIcon={<WhatsApp />}>
+              <Button 
+              className="text-grey mt-2 text-[#5fd946] border-[#5fd946]" 
+              variant="outlined" endIcon={<WhatsApp />}
+              onClick={negotiationButton}
+              >
                 Iniciar a negociação
               </Button>
 

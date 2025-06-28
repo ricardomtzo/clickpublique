@@ -20,6 +20,7 @@ import { useAuth } from '@/app/hooks/AuthService';
 import { useRouter } from 'next/navigation';
 import { Col, Row } from './Grids';
 import { isMobile as isMobileConf } from '@/config/utils';
+import UserService from '@/services/UserService';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -66,12 +67,18 @@ export default function Navbar() {
     const route = useRouter();
     const { user } = useAuth();
     const [isMobile, setIsMobile] = React.useState(isMobileConf());
+    const [totalScore, setTotalScore] = React.useState(0);
+    const [search, setSearch] = React.useState('');
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
         React.useState<null | HTMLElement>(null);
 
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+    React.useEffect(() => {
+        getScore();
+    },[])
 
     const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -92,6 +99,16 @@ export default function Navbar() {
 
     const handleNavigation = (location: string) => {
         route.push(location);
+    }
+
+    const getScore = async() => {
+        const score: any = await UserService.getScore(user?.id as string);
+
+        const totalPoints = score.reduce((sum: any, score: any) => {
+            return sum + (score.score_category?.points || 0);
+        }, 0);
+
+        setTotalScore(totalPoints);
     }
 
     const menuId = 'primary-search-account-menu';
@@ -158,8 +175,8 @@ export default function Navbar() {
     );
 
     const desktopMenu = (
-        <AppBar position="static" className='pt-2' style={{ height: '80px', backgroundColor: '#01004c' }}>
-            <Toolbar style={{ width: '90%', margin: '0 auto' }}>
+        <AppBar position="static" className='pt-2' style={{ height: '80px', backgroundColor: '#01004c', }}>
+            <Toolbar style={{ width: '100%', margin: '0 auto', justifyContent: 'center' }}>
                 <Typography
                     variant="h6"
                     noWrap
@@ -185,10 +202,11 @@ export default function Navbar() {
                     <StyledInputBase
                         placeholder="Procurar..."
                         inputProps={{ 'aria-label': 'search' }}
+                        onChange={(e) => setSearch(e.target.value)}
                     />
 
                 </Search>
-                <Button onClick={() => handleNavigation('/pesquisa')} variant="outlined" size='small' className='text-[#fff] border-[#fff] mr-5 pt-1'>Buscar</Button>
+                <Button onClick={() => handleNavigation('/pesquisa?search=' + search + '&page=1')} variant="outlined" size='small' className='text-[#fff] border-[#fff] mr-5 pt-1'>Buscar</Button>
      
                 <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                     {/*<IconButton size="large" aria-label="show 4 new mails" color="inherit">
@@ -200,7 +218,7 @@ export default function Navbar() {
                                 <ChatBubbleOutline />
                             </Badge>
                         </IconButton>*/}
-                    <IconButton
+                    {/*<IconButton
                         size="large"
                         aria-label="show 17 new notifications"
                         color="inherit"
@@ -208,7 +226,7 @@ export default function Navbar() {
                         <Badge badgeContent={17} color="error">
                             <NotificationsIcon />
                         </Badge>
-                    </IconButton>
+                    </IconButton>*/}
                     <IconButton
                         size="small"
                         edge="end"
@@ -217,15 +235,21 @@ export default function Navbar() {
                         aria-haspopup="true"
                         onClick={handleProfileMenuOpen}
                         color="inherit"
-                        className='ml-2 border rounded-full border-solid border-grey'
+                        className='ml-2 border rounded-full border-solid border-grey h-[40px]'
                     >
-                        <Avatar>H</Avatar>
+                        <Avatar className='h-[30px] w-[30px]'>H</Avatar>
                         <Typography className='ml-2 mr-2'>{user?.name}</Typography>
+
+                        <Typography className='text-[12px] ml-3 mr-1'>Pontuação</Typography> <Typography className='text-[20px] mr-2'>{totalScore}</Typography>
+
                     </IconButton>
                 </Box>
+                
+
+
                 <Button
                     variant='contained'
-                    className='rounded-full ml-3 px-5'
+                    className='rounded-full ml-3 px-5 h-[40px]'
                     style={{ backgroundColor: '#12d658', color: '#fff' }}
                     onClick={() => handleNavigation('/planos')}>
                     Planos

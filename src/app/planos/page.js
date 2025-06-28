@@ -5,6 +5,7 @@ import { ArrowForwardOutlined, CheckOutlined, ChevronLeft, ChevronRight } from "
 import { styled } from '@mui/material/styles';
 import PlansService from "@/services/PlansService";
 import { useRouter } from "next/navigation";
+import { Col } from "@/components/Grids";
 
 
 const Android12Switch = styled(Switch)(({ theme }) => ({
@@ -153,7 +154,7 @@ export default function Cardpayment() {
           overflowX: { md: 'auto', sm: 'auto', xs: 'auto' },
           flexDirection: { md: 'row', sm: 'column', xs: 'column' },
          }}*/>
-          {plans?.map((plano) => (
+          {plans?.map((plano, index) => (
             <Paper
               key={plano.nome}
               variant="outlined"
@@ -164,7 +165,7 @@ export default function Cardpayment() {
               }}
             >
 
-              {!plano?.btnSelected && <Box
+              {index === 2 && <Box
                 className="bg-[#000000] h-[25px] px-4 mt-[-20px] mr-[-20px] float-right w-[130px]"
                 sx={{ borderRadius: '0 10px 0px 10px' }}>
                 <Typography variant="body2" className="text-[13px] m-auto pt-1" color="#fff">MAIS VENDIDO</Typography>
@@ -176,18 +177,20 @@ export default function Cardpayment() {
                 <span className="text-[16px] font-normal"> {plano.ad_quantity} / mês</span>
               </Typography>
 
-              <Typography variant="p" className="mt-5 mb-5 text-[14px]" color="black">{plano.description}</Typography>
-              {Array.from({ length: 3 }).map((_, index) => (
-                <Typography className="mt-5 text-[15px]" key={index}><CheckOutlined color="success" /> Lorem ipsum</Typography>
+              {/*<Typography variant="p" className="mt-5 mb-5 text-[14px]" color="black">{plano.description}</Typography>*/}
+              <Col className="h-[200px]">
+              {plano.description?.split('<br/>').map((item, index) => (
+                <Typography className="mt-5 text-[15px]" key={index}><CheckOutlined color="success" /> {item}</Typography>
               ))}
+              </Col>
 
-              {!plano?.btnSelected ?
+              {index !== 3 ?
                 <Button
                   variant="outlined"
                   onClick={handleNextPage}
                   style={{ textTransform: 'initial' }}
                   className="mt-10 w-full bg-[#3497f91a] text-[#3497f9] border-0 w-[80%] h-[45px]">
-                  Testar Grátis
+                  {plano.price == '0.00' ? 'Plano atual' : 'Testar Grátis'}
                   <ArrowForwardOutlined className="ml-8" fontSize="small" />
                 </Button>
                 :

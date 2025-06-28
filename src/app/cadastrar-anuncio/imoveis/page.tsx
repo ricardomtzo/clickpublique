@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from "react";
-import { Alert, Button, Grid2, Link, Modal, Paper, Switch, TextareaAutosize, Typography } from "@mui/material";
+import { Alert, Button, Grid2, Link, Modal, Paper, Slider, Switch, TextareaAutosize, Typography } from "@mui/material";
 import SelectSearch from "@/components/SelectSearch";
 import TextInputCustom from "@/components/TextInputCustom";
 import { Col, Row } from "@/components/Grids";
@@ -9,7 +9,7 @@ import ButtonSelect from "@/components/ButtonSelect";
 import StteperCustom from "@/components/StepperCustom";
 import { environment } from "@/environments/environment";
 import { useAuth } from "@/app/hooks/AuthService";
-import { CheckCircleOutline, CloseSharp } from "@mui/icons-material";
+import { CheckCircleOutline, CloseSharp, Share } from "@mui/icons-material";
 import { useRouter } from "next/navigation";
 import MultiImageUploader from "@/components/ImagesSelect";
 import { isMobile } from "@/config/utils";
@@ -21,6 +21,7 @@ export default function Home() {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [countShare, setCountShare] = useState(0);
   const [form, setForm] = useState<any>({ price: 0, details_immobile: '', details_condominium: '' });
 
   const setInputValue = (name: string, value: any) => {
@@ -101,6 +102,27 @@ export default function Home() {
     setOpen(!open);
   };
 
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: form?.title,
+          text: 'Olha esse anuncio que eu achei no Click&Publique',
+          url: 'https://clickepublique.com/item?ad=' + 1,
+        });
+
+        // Adicionar pontuação ao usuário
+        setCountShare(countShare + 1);
+        console.log('Compartilhado com sucesso');
+      } catch (error) {
+        console.error('Erro ao compartilhar:', error);
+      }
+    } else {
+      alert('Compartilhamento não suportado neste dispositivo');
+    }
+  }
+
+
   return (
     <Col className="w-[100%] py-5 px-4 pb-20">
 
@@ -122,7 +144,7 @@ export default function Home() {
                       label={input.label}
                       name={input.name}
                       type={input?.type ?? "text"}
-                      multiline={input?.type === 'textarea'} 
+                      multiline={input?.type === 'textarea'}
                       rows={4}
                       fullWidth
                       onChange={(e) => setInputValue(input.name, e.target.value)}
@@ -196,18 +218,47 @@ export default function Home() {
       </form>
 
       <Modal open={open} onClose={handleModal}>
-        <Grid2 container flex={1} className="items-center justify-center h-screen" >
+        <Grid2 container flex={1} className="items-center justify-center h-screen m-3" >
           <Paper className="p-10 text-center" >
-            <CheckCircleOutline className="text-[#1df166] text-[100px]" />
-            <Typography variant="h6" className="mb-5" >
-              Anúncio cadastrado com sucesso!
-            </Typography>
-            <Button
-              variant="contained"
-              type="button"
-              size="small"
-              className="bg-[#1df166] text-white"
-              onClick={() => router.push('/perfil')} >Ir para meus anúncios</Button>
+            <Row container className="">
+              <Col className={!isMobile() ? `border-r items-center justify-center pr-3` : "items-center justify-center w-[100%]"}>
+                <CheckCircleOutline className="text-[#1df166] text-[100px] text-center" />
+                <Button
+                  variant="contained"
+                  type="button"
+                  size="small"
+                  className="bg-[#1df166] text-white"
+                  onClick={() => router.push('/perfil')} >Ir para meus anúncios</Button>
+              </Col>
+
+              <Col className="pl-5">
+                <Typography variant="h6" className="mb-5 mt-3" >
+                  Anúncio cadastrado com sucesso!
+                  Para liberar o seu anúncio, compartilhe com 5 pessoas.</Typography>
+                <Row container className="mb-5 justify-evenly ">
+                  <Col>
+                    <Button
+                      variant="outlined"
+                      startIcon={<Share />}
+                      className="mb-5 rounded-full"
+                      onClick={handleShare}
+                    >
+                      Compartilhar
+                    </Button>
+                  </Col>
+                  <Col className="w-[70%]">
+                    <Slider
+                      value={countShare}
+                      //onChange={handlePrecoChange}
+                      valueLabelDisplay="auto"
+                      min={0}
+                      max={5}
+                    />
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+
           </Paper>
         </Grid2>
       </Modal>

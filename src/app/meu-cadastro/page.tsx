@@ -24,11 +24,13 @@ export default function Cadastro() {
   const [gender, setGender] = React.useState<any>('1');
   const [infoUpdated, setInfoUpdated] = React.useState<any>(false);
   const [addressUpdated, setAddressUpdated] = React.useState<any>(false);
+  const [totalscore, setTotalScore] = React.useState<any>(0);
 
   React.useEffect(() => {
     getUser(user?.id);
     setTypeUser(user?.type_user);
     setGender(user?.gender);
+    getScore();
   }, [user?.id]);
 
   async function getUser(id: any) {
@@ -73,14 +75,14 @@ export default function Cadastro() {
 
     form['user_id'] = user?.id;
 
-    if (!user?.addresses[0]?.id) {
+    if (!user?.addresses?.[0]?.id) {
       const response = await UserService.createAddress(form);
       updateUser({
         ...user,
         addresses: [response]
       })
     } else {
-      const response = await UserService.updateAddress(user.addresses[0].id, form);
+      const response = await UserService.updateAddress(user.addresses?.[0].id, form);
       updateUser({
         ...user,
         addresses: [response]
@@ -126,8 +128,33 @@ export default function Cadastro() {
     }, 3000);
   }
 
+  const handlerCep = (e: any) => {
+    if (e.target.value.length == 8)
+    fetch(`https://viacep.com.br/ws/${e.target.value}/json/`)
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('street')?.setAttribute('value', data.logradouro);
+        document.getElementById('district')?.setAttribute('value', data.bairro);
+        document.getElementById('city')?.setAttribute('value', data.localidade);
+        document.getElementById('state')?.setAttribute('value', data.uf);
+      })
+  }
+
+  const getScore = async() => {
+    const score: any = await UserService.getScore(user?.id as string);
+
+    const totalPoints = score.reduce((sum: any, score: any) => {
+      return sum + (score.score_category?.points || 0);
+    }, 0);
+
+    setTotalScore(totalPoints);
+  }
+
   return (
     <Col container spacing={2} p={2} style={{ maxWidth: '600px', margin: 'auto' }}>
+      <Typography variant="h6" className="text-black mt-5 border-b" >
+        Atualmente você tem <strong>{totalscore}</strong> pontos
+      </Typography>
 
       <Typography variant="h5" className="text-black mt-5" >
         Meu cadastro
@@ -268,8 +295,10 @@ export default function Cadastro() {
                       required
                       label={input.label}
                       name={input.name}
+                      id={input.name}
                       style={{ marginRight: 10 }}
-                      defaultValue={user?.addresses[0]?.[input.name]}
+                      defaultValue={user?.addresses?.[0]?.[input.name]}
+                      onChange={input.name === 'zip_code' ? handlerCep : undefined}
                     />
                   </Col>
                 ))}

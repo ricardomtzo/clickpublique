@@ -48,6 +48,11 @@ class UserService {
   async delete(id: string): Promise<void> {
     await api.delete(`/users/${id}`);
   }
+
+  async getScore(id: string): Promise<User> {
+    const response = await api.get<User>(`/getScore/${id}`);
+    return response.data;
+  }
 }
 
 export default new UserService();

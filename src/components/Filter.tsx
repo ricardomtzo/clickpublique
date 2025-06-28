@@ -6,16 +6,23 @@ import {
 } from '@mui/material';
 import { CheckboxChangeEvent } from 'primereact/checkbox';
 import CategorieService from '@/services/CategorieService';
+import { useRouter } from 'next/navigation';
 
-const FiltroLateral = () => {
-  const [categoria, setCategoria] = useState<any>({});
+const FiltroLateral = ({params}: any) => {
+  const router = useRouter();
+  const [selectedCategories, setSelectedCategories] = useState<any>([]);
   const [preco, setPreco] = useState([0, 1000]);
   const [localizacao, setLocalizacao] = useState('');
   const [categories, setCategories] = useState<any>([]);
 
   useEffect(() => {
+    const categoriesList = params.categories?.split(',');
+    const price = params.minPrice && params.maxPrice ? [params.minPrice, params.maxPrice] : [0, 1000];
+    setPreco(price);
+    setLocalizacao(params.location);
+    setSelectedCategories(categoriesList || []);
     getCategories();
-  }, []);
+  }, [params]);
 
   const getCategories = async () => {
     try {
@@ -27,10 +34,8 @@ const FiltroLateral = () => {
   }
 
   const handleCategoryChange = (event: any) => {
-    setCategoria({
-      ...categoria,
-      [event.target.name]: event.target.checked,
-    });
+    console.log(event.target.checked);
+    setSelectedCategories(event.target.checked ? [...selectedCategories, event.target.value] : selectedCategories.filter((id: any) => id !== event.target.value));
   };
 
   const handlePrecoChange = (event: any, newValue: any) => {
@@ -38,13 +43,13 @@ const FiltroLateral = () => {
   };
 
   const handleLimparFiltros = () => {
-    setCategoria({
-      carros: false,
-      imóveis: false,
-      eletrônicos: false,
-    });
+    setSelectedCategories([]);
     setPreco([0, 1000]);
     setLocalizacao('');
+  };
+
+  const handleAplicarFiltros = () => {
+    router.push(`/pesquisa?categories=${selectedCategories}&minPrice=${preco[0]}&maxPrice=${preco[1]}&location=${localizacao}`);
   };
 
   return (
@@ -61,9 +66,10 @@ const FiltroLateral = () => {
           <FormControlLabel
             control={
               <Checkbox
-                checked={categoria[category.slug]}
+                //checked={selectedCategories.includes(category.id)}
                 onChange={handleCategoryChange}
                 name={category.name}
+                value={category.type}
               />
             }
             label={category.name}
@@ -84,9 +90,9 @@ const FiltroLateral = () => {
       </ListItem>
 
       {/* Filtro por Localização */}
-      <Typography className='mt-3' variant="body2">Localização</Typography>
+      <Typography className='mt-3' variant="body2">Cidade</Typography>
       <TextField
-        label="Cidade ou Região"
+        label="Cidade"
         variant="outlined"
         className='mt-2'
         size='small'
@@ -96,7 +102,7 @@ const FiltroLateral = () => {
       />
 
       {/* Botões de Ação */}
-      <Button variant="contained" className='mt-2' color="primary" fullWidth>
+      <Button variant="contained" className='mt-2' color="primary" fullWidth onClick={handleAplicarFiltros}>
         Aplicar Filtros
       </Button>
       <Button variant="outlined" className='mt-2' color="secondary" fullWidth onClick={handleLimparFiltros}>

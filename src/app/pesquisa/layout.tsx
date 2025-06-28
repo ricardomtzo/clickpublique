@@ -10,6 +10,7 @@ import "../globals.css";
 import Navbar from "@/components/Navbar";
 import { Box, Container, CssBaseline, Typography } from "@mui/material";
 import Link from "next/link";
+import { Suspense } from "react";
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -39,10 +40,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <CssBaseline />
-        <Navbar />
-        <Container style={{ padding: '20px', margin: 'auto' }}>
-          {children}
-        </Container>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Navbar />
+          <Container style={{ padding: '20px', margin: 'auto' }}>
+            {children}
+          </Container>
+        </Suspense>
 
         <footer style={{ backgroundColor: '#f5f5f5', padding: '20px', width: '100%', }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
