@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import ReactPlayer from 'react-player';
 
-const API_KEY = 'AIzaSyBwfWIHa8Hqkf2upjZViwoRwnURe1XA22Y'; // ⚠️ Substituir pela sua
-const CHANNEL_ID = 'UCn6BkVBZMB096e0sgqJ-17Q'; // ID do canal
+const API_KEY = ''; 
+const CHANNEL_ID = ''; // ID do canal
 const MAX_RESULTS = 10;
 
 export default function YouTubeChannelVideos() {
